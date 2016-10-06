@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Vehicle Database</string>
+    <string name="vehicle_entry_title">Vehicle Details</string>
 </resources>

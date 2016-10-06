@@ -1,13 +1,35 @@
+/*++
+
+Module Name:
+
+VehicleContract.java
+
+Abstract:
+
+This module define the tables used in SQLite database. This project store vehicle data
+ into SQLite database using following tables:
+- EVENTS
+- EVENT_TYPE
+- FUELING
+- SERVICE
+- SERVCE_TYPE
+- VECHILES
+
+Environment:
+
+Android
+
+Copyright ? 2016 Vesa Eskola.
+
+--*/
+
 package database;
 
 import android.provider.BaseColumns;
 
-/**
- * Created by vesae on 3.10.2016.
- */
 
 public class VehicleContract {
-    public static final String DB_NAME = "fi.vesaeskola.vehicledatabase.db";
+    public static final String DB_NAME = "vehicledatabase.db";
     public static final int DB_VERSION = 2;
 
     // A provider isn't required to have a primary key, and it isn't required to use _ID as the
@@ -78,5 +100,4 @@ public class VehicleContract {
         public static final String COL_EVENTTYPE = "EventType";
         public static final String COL_DESCRIPTION = "Description";
     }
-
 }

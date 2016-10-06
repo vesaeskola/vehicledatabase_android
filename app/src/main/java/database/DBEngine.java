@@ -1,3 +1,29 @@
+/*++
+
+Module Name:
+
+DBEngine.java
+
+Abstract:
+
+This module implements DBEngine open helper for the SQLite database.
+Database is used to store relational database tables into one file.
+This project store vehicle data into SQLite database using following tables:
+- EVENTS
+- EVENT_TYPE
+- FUELING
+- SERVICE
+- SERVCE_TYPE
+- VECHILES
+
+Environment:
+
+Android
+
+Copyright ? 2016 Vesa Eskola.
+
+--*/
+
 package database;
 
 import android.content.Context;
@@ -5,10 +31,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-/**
- * Created by vesae on 3.10.2016.
- */
 
 public class DBEngine extends SQLiteOpenHelper {
     private static final String TAG = "DBEngine";
@@ -41,6 +63,7 @@ public class DBEngine extends SQLiteOpenHelper {
                 VehicleContract.VehicleEntry.COL_IMAGEPATH         + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
+        db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.FuelingEntry.TABLE + " ( " +
                 VehicleContract.FuelingEntry._ID                   + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -50,9 +73,10 @@ public class DBEngine extends SQLiteOpenHelper {
                 VehicleContract.FuelingEntry.COL_MILEAGE           + " INT, " +
                 VehicleContract.FuelingEntry.COL_FULL              + " INT, " +
                 VehicleContract.FuelingEntry.COL_PRISE             + " INT, " +
-                VehicleContract.FuelingEntry.COL_DESCRIPTION       + " TEXT, " +
+                VehicleContract.FuelingEntry.COL_DESCRIPTION       + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
+        db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.EventEntry.TABLE + " ( " +
                 VehicleContract.EventEntry._ID                     + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -61,9 +85,10 @@ public class DBEngine extends SQLiteOpenHelper {
                 VehicleContract.EventEntry.COL_EVENTID             + " INT, " +
                 VehicleContract.EventEntry.COL_MILEAGE             + " INT, " +
                 VehicleContract.EventEntry.COL_PRISE               + " INT, " +
-                VehicleContract.EventEntry.COL_DESCRIPTION         + " TEXT, " +
+                VehicleContract.EventEntry.COL_DESCRIPTION         + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
+        db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.ServiceEntry.TABLE + " ( " +
                 VehicleContract.ServiceEntry._ID                   + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -72,19 +97,21 @@ public class DBEngine extends SQLiteOpenHelper {
                 VehicleContract.ServiceEntry.COL_SERVICETYPE       + " INT, " +
                 VehicleContract.ServiceEntry.COL_MILEAGE           + " INT, " +
                 VehicleContract.ServiceEntry.COL_PRISE             + " INT, " +
-                VehicleContract.ServiceEntry.COL_DESCRIPTION       + " TEXT, " +
+                VehicleContract.ServiceEntry.COL_DESCRIPTION       + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
+        db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.ServiceTypeEntry.TABLE + " ( " +
                 VehicleContract.ServiceTypeEntry.COL_SERVICETYPE   + " INTEGER PRIMARY KEY NOT NULL, " +
-                VehicleContract.ServiceTypeEntry.COL_DESCRIPTION   + " TEXT, " +
+                VehicleContract.ServiceTypeEntry.COL_DESCRIPTION   + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
+        db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.EventTypeEntry.TABLE + " ( " +
                 VehicleContract.EventTypeEntry.COL_EVENTTYPE       + " INTEGER PRIMARY KEY NOT NULL, " +
-                VehicleContract.EventTypeEntry.COL_DESCRIPTION     + " TEXT, " +
+                VehicleContract.EventTypeEntry.COL_DESCRIPTION     + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
 
@@ -94,11 +121,21 @@ public class DBEngine extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.VehicleEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.FuelingEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.EventEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.ServiceEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.ServiceTypeEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.EventTypeEntry.TABLE);
         onCreate(db);
     }
 
     public void delete(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.VehicleEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.FuelingEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.EventEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.ServiceEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.ServiceTypeEntry.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.EventTypeEntry.TABLE);
         onCreate(db);
     }
 

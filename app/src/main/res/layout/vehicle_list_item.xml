@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Layout name: vehicle_list_item.java
+    Abstract: Layout for the list view item of MainActivity view ListView widget.
+    Environment: Android
+    Copyright (c) 2016 Vesa Eskola.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/vehicle_make"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Make"
+            android:textSize="20sp"
+            android:textStyle="normal|bold" />
+
+        <TextView
+            android:id="@+id/vehicle_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Model"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/vehicle_vincode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Vincode"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" >
+
+        <TextView
+            android:id="@+id/vehicle_regplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Regplate"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/vehicle_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Open" />
+    </LinearLayout>
+
+</RelativeLayout>
+
+<!--
+
+android:layout_toRightOf="@+id/vehicle_make"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tableLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip" >
+
+        <TextView
+            android:id="@+id/vehicle_make"
+            android:text="Column 1"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/vehicle_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="Open" />
+    </TableRow>
+
+</TableLayout>
+-->
+
+<!--
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/vehicle_make"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:text="Make"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/vehicle_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Model"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/vehicle_make"
+        android:layout_toEndOf="@+id/vehicle_make" />
+
+    <TextView
+        android:id="@+id/vehicle_regplate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RegPlate"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/vehicle_model"
+        android:layout_toEndOf="@+id/vehicle_model" />
+
+    <Button
+        android:id="@+id/vehicle_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="Open" />
+
+</RelativeLayout>
+    -->

@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Layout name: activity_main.java
+    Abstract: Layout for the MainActivity class.
+    Environment: Android
+    Copyright (c) 2016 Vesa Eskola.
+-->
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,4 +23,5 @@
         android:id="@+id/list_vehicle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
 </RelativeLayout>
