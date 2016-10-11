@@ -3,7 +3,7 @@
 
 extern "C"
 jstring
-Java_fi_vesaeskola_vehicledatabase_MainActivity_stringFromJNI(
+Java_fi_vesaeskola_vehicledatabase_VehicleListActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";

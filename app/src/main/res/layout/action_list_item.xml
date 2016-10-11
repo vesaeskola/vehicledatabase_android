@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Layout name: vehicle_list_item.java
-    Abstract: Layout for the ListView item of VehicleListActivity view ListView widget.
+    Layout name: action_list_item.java
+    Abstract: Layout for the ListView item of ActionListActivity view ListView widget.
     Environment: Android
     Copyright (C) 2016 Vesa Eskola.
 -->
@@ -18,29 +18,19 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/vehicle_make"
+            android:id="@+id/row1_col1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Make"
-            android:textSize="20sp"
-            android:textStyle="normal|bold" />
-
-        <TextView
-            android:id="@+id/vehicle_model"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Model"
+            android:text="Row1_Col1"
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/vehicle_vincode"
+            android:id="@+id/row2_col1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Vincode"
+            android:text="Row2_Col1"
             android:textSize="14sp" />
-
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -51,12 +41,20 @@
         android:layout_alignParentRight="true">
 
         <TextView
-            android:id="@+id/vehicle_regplate"
+            android:id="@+id/row1_col2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Regplate"
+            android:text="Row1_Col2"
             android:textSize="18sp" />
 
+        <TextView
+            android:id="@+id/row2_col2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Row2_Col2"
+            android:textSize="14sp" />
+
+        <!--
         <Button
             android:id="@+id/vehicle_open"
             android:layout_width="wrap_content"
@@ -64,6 +62,7 @@
             android:layout_alignParentRight="true"
             android:onClick="openVehicle"
             android:text="Open" />
+            -->
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Layout name: activity_vehicle_entry_detail.java
+Abstract: Layout for the VehicleEntryDetailActivity class.
+Environment: Android
+Copyright (C) 2016 Vesa Eskola.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="New Vehicle"
+        android:textSize="22sp" />
+
+    <EditText
+        android:id="@+id/vehicle_year"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="Year"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/vehicle_vincode"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="VinCode" />
+    <EditText
+        android:id="@+id/vehicle_description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Description" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    <RadioButton
+        android:text="@string/vehicle_entry_radiobutton_ga"
+        android:id="@+id/radioButton"
+        android:textSize="22sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true" />
+
+    <RadioButton
+        android:text="@string/vehicle_entry_radiobutton_li"
+        android:id="@+id/radioButton2"
+        android:checked="false"
+        android:textSize="22sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </RadioGroup>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="OnVehicleDetailEntered"
+            android:layout_alignParentRight="true"
+            android:text="OK"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+</LinearLayout>
+

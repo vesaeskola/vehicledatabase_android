@@ -13,7 +13,7 @@ Environment:
 
 Android
 
-Copyright ? 2016 Vesa Eskola.
+Copyright (C) 2016 Vesa Eskola.
 
 --*/
 
@@ -29,6 +29,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,11 +39,11 @@ import java.util.ArrayList;
 import database.DBEngine;
 import database.VehicleContract;
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+public class VehicleListActivity extends AppCompatActivity {
+    private static final String TAG = "VehicleListActivity";
     private DBEngine mDatabaseEngine;
     private ListView mVehicleListView;
-    private VehicleAdapter mVehicleAdapter;
+    private VehicleListAdapter mVehicleAdapter;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -57,12 +59,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_vehicle_list);
 
         // Example of a call to a native method
         //TextView tv = (TextView) findViewById(R.id.sample_text);
         //tv.setText(stringFromJNI());
-
         mVehicleListView = (ListView) findViewById(R.id.list_vehicle);
 
         // SQLiteOpenHelper based helper to open or create database.
@@ -86,10 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.menuitem_add_vehicle:
-                Log.d(TAG, "open VehicleEntryActivity to add new Vechile");
+                Log.d(TAG, "menu item clicked: Add new Vechile");
 
-                // Open VehicleEntryActivity page
-                Intent intent = new Intent(this, VehicleEntryActivity.class);
+                // Open VehicleEntryBasicActivity page
+                Intent intent = new Intent(this, VehicleEntryBasicActivity.class);
                 startActivityForResult(intent, 1);
                 return true;
             default:
@@ -105,9 +106,11 @@ public class MainActivity extends AppCompatActivity {
                 String make=data.getStringExtra("ret_make");
                 String model=data.getStringExtra("ret_model");
                 String regplate=data.getStringExtra("ret_regplate");
+                int year = data.getIntExtra("ret_year", 0);
                 String vincode=data.getStringExtra("ret_vincode");
+                String description=data.getStringExtra("ret_description");
 
-                Log.d(TAG, "New vechile entered by user: " + make + " " + model + " " + regplate + " " + vincode);
+                Log.d(TAG, "New vechile entered by user: " + make + " " + model + " " + regplate + " " + year + " " + vincode + " " + description);
 
                 // Open or create database file
                 SQLiteDatabase db = mDatabaseEngine.getWritableDatabase();
@@ -116,9 +119,9 @@ public class MainActivity extends AppCompatActivity {
                 values.put(VehicleContract.VehicleEntry.COL_VINCODE, vincode);
                 values.put(VehicleContract.VehicleEntry.COL_MAKE, make);
                 values.put(VehicleContract.VehicleEntry.COL_MODEL, model);
-                values.put(VehicleContract.VehicleEntry.COL_YEAR, 1967);
+                values.put(VehicleContract.VehicleEntry.COL_YEAR, year);
                 values.put(VehicleContract.VehicleEntry.COL_REGPLATE, regplate);
-                values.put(VehicleContract.VehicleEntry.COL_DESCRIPTION, "TBD: Description");
+                values.put(VehicleContract.VehicleEntry.COL_DESCRIPTION, description);
                 values.put(VehicleContract.VehicleEntry.COL_FUEL_UNIT_ID, 1);
                 values.put(VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID, 1);
                 values.put(VehicleContract.VehicleEntry.COL_IMAGEPATH, "null");
@@ -163,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (mVehicleListView != null) {
             if (mVehicleAdapter == null) {
-                mVehicleAdapter = new VehicleAdapter(this, vehicleList);
+                mVehicleAdapter = new VehicleListAdapter(this, vehicleList);
                 mVehicleListView.setAdapter(mVehicleAdapter);
             } else {
                 mVehicleAdapter.clear();
@@ -174,6 +177,21 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
         db.close();
     }
+
+
+    public void openVehicle(View view) {
+        View parent = (View) view.getParent();
+        Button vehicleOpenBtn = (Button) parent.findViewById(R.id.vehicle_open);
+        Log.d(TAG, "Selected vehicle: " + vehicleOpenBtn.getId() + " " + vehicleOpenBtn.getTag() );
+
+        // TBD: There is problem: If user delete one vehicle list id and sql id are not anymore iin sync. Need some
+        // to store the VEHICLES table _id column into list view
+        // Open VehicleEntryBasicActivity page
+        Intent intent = new Intent(this, VehicleInfoActivity.class);
+        intent.putExtra("vehicle_Id", (int)vehicleOpenBtn.getTag());
+        startActivityForResult(intent, 1);
+    }
+
 
     /**
      * A native method that is implemented by the 'native-lib' native library,

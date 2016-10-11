@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".VehicleListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,7 +23,16 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".VehicleEntryActivity"></activity>
+        <activity android:name=".VehicleEntryBasicActivity" />
+        <activity
+            android:name=".VehicleEntryDetailActivity"
+            android:label="@string/title_activity_vehicle_entry_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".VehicleInfoActivity" />
+        <activity android:name=".ActionListActivity" />
+        <activity android:name=".FuelingEntryActivity" />
+        <activity android:name=".ServiceEntryActivity" />
+        <activity android:name=".EventEntryActivity"></activity>
     </application>
 
 </manifest>

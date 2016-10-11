@@ -19,7 +19,7 @@ Environment:
 
 Android
 
-Copyright ? 2016 Vesa Eskola.
+Copyright (C) 2016 Vesa Eskola.
 
 --*/
 

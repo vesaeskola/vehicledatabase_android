@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Layout name: activity_vehicle_info.java
+    Abstract: Layout for the full vehicle info.
+    Environment: Android
+    Copyright (C) 2016 Vesa Eskola.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginLeft="8dp" >
+
+    <Button
+        android:id="@+id/btn_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/layout1"
+        android:onClick="openMenu"
+        android:text="Menu"
+        android:layout_marginRight="8dp" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/vehicle_make"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textStyle="normal|bold"
+            android:text="Make"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/vehicle_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="4dp"
+            android:text="Model"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/vehicle_regplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="4dp"
+            android:text="Plate"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout2"
+        android:layout_below="@id/layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/vehicle_vincode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="4dp"
+            android:text="Vincode"
+            android:textSize="14sp" />
+        <!--
+        <TextView
+            android:id="@+id/vehicle_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="4dp"
+            android:text="Year"
+            android:textSize="22sp" />-->
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout3"
+        android:layout_below="@id/layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_centerHorizontal="false"
+        android:layout_centerVertical="false">
+
+        <TextView
+            android:id="@+id/vehicle_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="4dp"
+            android:text="Description"
+            android:textSize="14sp"
+            />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout4"
+        android:layout_below="@id/layout3"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/btn_refueling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onNewFueling"
+            android:text="Refueling"
+            android:layout_marginRight="8dp" />
+
+        <Button
+            android:id="@+id/btn_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onNewService"
+            android:text="Service"
+            android:layout_marginRight="8dp" />
+
+        <Button
+            android:id="@+id/btn_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onNewEvent"
+            android:text="Event"
+            android:layout_marginRight="8dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/vehicle_recent"
+        android:layout_below="@id/layout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="8dp"
+        android:text="Recent:"
+        android:textSize="22sp" />
+
+    <!-- Recent Event begin -->
+    <TextView
+        android:id="@+id/recent_event_col1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event_Col1"
+        android:textSize="14sp"
+        android:layout_below="@+id/vehicle_recent"
+        android:layout_marginLeft="8dp" />
+
+    <TextView
+        android:id="@+id/recent_event_col2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event_Col2"
+        android:textSize="14sp"
+        android:layout_below="@+id/vehicle_recent"
+        android:layout_toLeftOf="@+id/btn_events_more"
+        android:layout_marginLeft="8dp" />
+
+    <TextView
+        android:id="@+id/recent_event_row2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event_Row2"
+        android:textSize="14sp"
+        android:layout_below="@+id/recent_event_col1"
+        android:layout_marginLeft="8dp" />
+
+    <Button
+        android:id="@+id/btn_events_more"
+        android:layout_below="@id/vehicle_recent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:onClick="openEventList"
+        android:text="More"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="20dp" />
+    <!-- Recent Event end -->
+
+    <!-- Recent Service begin -->
+    <TextView
+        android:id="@+id/recent_service_col1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_events_more"
+        android:text="Service_Col1"
+        android:textSize="14sp"
+        android:layout_marginLeft="8dp" />
+
+    <TextView
+        android:id="@+id/recent_service_col2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Service_Col2"
+        android:textSize="14sp"
+        android:layout_below="@+id/btn_events_more"
+        android:layout_toLeftOf="@+id/btn_service_more"
+        android:layout_marginLeft="8dp" />
+
+    <TextView
+        android:id="@+id/recent_service_row2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Service_Row2"
+        android:textSize="14sp"
+        android:layout_below="@+id/recent_service_col1"
+        android:layout_marginLeft="8dp" />
+
+
+    <Button
+        android:id="@+id/btn_service_more"
+        android:layout_below="@id/btn_events_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:onClick="openServiceList"
+        android:text="More"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="20dp" />
+    <!-- Recent Service end -->
+
+    <!-- Recent fueling begin -->
+    <TextView
+        android:id="@+id/recent_fueling_col1"
+        android:layout_below="@id/btn_service_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fueling_Col1"
+        android:textSize="14sp"
+        android:layout_marginLeft="8dp" />
+
+    <TextView
+        android:id="@+id/recent_fueling_col2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fueling_Col2"
+        android:textSize="14sp"
+        android:layout_below="@id/btn_service_more"
+        android:layout_toLeftOf="@+id/btn_fueling_more"
+        android:layout_marginLeft="8dp" />
+
+    <TextView
+        android:id="@+id/recent_fueling_row2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fueling_Row2"
+        android:textSize="14sp"
+        android:layout_below="@+id/recent_fueling_col1"
+        android:layout_marginLeft="8dp" />
+
+    <Button
+        android:id="@+id/btn_fueling_more"
+        android:layout_below="@id/btn_service_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:onClick="openFuelingList"
+        android:text="More"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="20dp" />
+    <!-- Recent fueling end -->
+
+
+</RelativeLayout>

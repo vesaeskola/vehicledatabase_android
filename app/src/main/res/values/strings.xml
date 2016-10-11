@@ -1,4 +1,25 @@
 <resources>
     <string name="app_name">Vehicle Database</string>
     <string name="vehicle_entry_title">Vehicle Details</string>
+    <string name="title_activity_vehicle_entry_detail">VehicleEntryDetailActivity</string>
+
+    <string name="vehicle_entry_radiobutton_km">Kilometers</string>
+    <string name="vehicle_entry_radiobutton_mi">Miles</string>
+    <string name="vehicle_entry_radiobutton_li">Liters</string>
+    <string name="vehicle_entry_radiobutton_ga">Gallon</string>
+
+    <string name="action_entry_pick_date">Pick date</string>
+
+    <string name="vehicle_info_no_events">No Events</string>
+    <string name="vehicle_info_no_services">No Services</string>
+    <string name="vehicle_info_no_refuelings">No Refuelings</string>
+
+
+    <string name="vehicle_info_delete_vehicle_title">Delete Vehicle</string>
+    <string name="vehicle_info_delete_vehicle_confirmation">Do you really want to delete this vehicle ?</string>
+
+
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="privacy_policy_content">This Privacy Policy describes our policies on the collection, use and disclosure of your information, and describes the choices available to you regarding the use of, your access to, and how to update or delete your personal information. We are committed to good privacy practices regarding personal data entered by you. &#x0a;&#x0a;General Information: Vehicle database application maintain all information entered by user about your vehicles. It will keep track of services, mileages, trips, costs and events.&#x0a;&#x0a;The information we gather: Vehicle database application gather information you give us through forms, any other information will not be collected.&#x0a;&#x0a;How we use the information we gather: Vehicle database application merely operates on the device internal database. No information is ever sent outside your device.&#x0a;&#x0a;Security: The security of your personal data is important to us. When you enter any information on Vehicle database application forms it is stored to user profile related local folder of the application. Other computer user will not see data gathered. When ever user uninstall the vehicle database application, also the data gathered will be deleted automatically."</string>
+
 </resources>

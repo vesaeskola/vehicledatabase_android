@@ -12,7 +12,7 @@ Environment:
 
 Android
 
-Copyright � 2016 Vesa Eskola.
+Copyright (C) 2016 Vesa Eskola.
 
 --*/
 
@@ -23,12 +23,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class VehicleAdapter extends ArrayAdapter<VehicleListItem> {
-    public VehicleAdapter (Context context, ArrayList<VehicleListItem> vehicles) {
+public class VehicleListAdapter extends ArrayAdapter<VehicleListItem> {
+    public VehicleListAdapter(Context context, ArrayList<VehicleListItem> vehicles) {
         super(context, 0, vehicles);
     }
 
@@ -42,6 +43,10 @@ public class VehicleAdapter extends ArrayAdapter<VehicleListItem> {
         }
 
         // Lookup view for data population
+        Button bOpenVehicle = (Button) convertView.findViewById(R.id.vehicle_open);
+        bOpenVehicle.setTag(position);
+
+        //bOpenVehicle.setTag() .setId(position);
         TextView tvMake = (TextView) convertView.findViewById(R.id.vehicle_make);
         TextView tvModel = (TextView) convertView.findViewById(R.id.vehicle_model);
         TextView tvRegPlate = (TextView) convertView.findViewById(R.id.vehicle_regplate);

@@ -1,8 +1,23 @@
-package fi.vesaeskola.vehicledatabase;
+/*++
 
-/**
- * Created by vesae on 6.10.2016.
- */
+Module Name:
+
+VehicleListItem.java
+
+Abstract:
+
+This class is used to store and populate listview with vehicle basic information (make, model,
+regplate, vincode).
+
+Environment:
+
+Android
+
+Copyright (C) 2016 Vesa Eskola.
+
+--*/
+
+package fi.vesaeskola.vehicledatabase;
 
 public class VehicleListItem {
     public String make;

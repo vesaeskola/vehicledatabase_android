@@ -20,7 +20,7 @@ Environment:
 
 Android
 
-Copyright ? 2016 Vesa Eskola.
+Copyright (C) 2016 Vesa Eskola.
 
 --*/
 
@@ -68,7 +68,7 @@ public class DBEngine extends SQLiteOpenHelper {
         createTable = "CREATE TABLE " + VehicleContract.FuelingEntry.TABLE + " ( " +
                 VehicleContract.FuelingEntry._ID                   + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 VehicleContract.FuelingEntry.COL_VEHICLEID         + " TEXT, " +
-                VehicleContract.FuelingEntry.COL_DATE              + " TEXT, " +
+                VehicleContract.FuelingEntry.COL_DATE              + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                 VehicleContract.FuelingEntry.COL_AMOUNT            + " INT, " +
                 VehicleContract.FuelingEntry.COL_MILEAGE           + " INT, " +
                 VehicleContract.FuelingEntry.COL_FULL              + " INT, " +
@@ -81,7 +81,7 @@ public class DBEngine extends SQLiteOpenHelper {
         createTable = "CREATE TABLE " + VehicleContract.EventEntry.TABLE + " ( " +
                 VehicleContract.EventEntry._ID                     + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 VehicleContract.EventEntry.COL_VEHICLEID           + " TEXT, " +
-                VehicleContract.EventEntry.COL_DATE                + " TEXT, " +
+                VehicleContract.EventEntry.COL_DATE                + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                 VehicleContract.EventEntry.COL_EVENTID             + " INT, " +
                 VehicleContract.EventEntry.COL_MILEAGE             + " INT, " +
                 VehicleContract.EventEntry.COL_PRISE               + " INT, " +
@@ -93,7 +93,7 @@ public class DBEngine extends SQLiteOpenHelper {
         createTable = "CREATE TABLE " + VehicleContract.ServiceEntry.TABLE + " ( " +
                 VehicleContract.ServiceEntry._ID                   + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 VehicleContract.ServiceEntry.COL_VEHICLEID         + " TEXT, " +
-                VehicleContract.ServiceEntry.COL_DATE              + " TEXT, " +
+                VehicleContract.ServiceEntry.COL_DATE              + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                 VehicleContract.ServiceEntry.COL_SERVICETYPE       + " INT, " +
                 VehicleContract.ServiceEntry.COL_MILEAGE           + " INT, " +
                 VehicleContract.ServiceEntry.COL_PRISE             + " INT, " +
