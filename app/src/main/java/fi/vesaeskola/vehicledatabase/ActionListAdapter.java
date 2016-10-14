@@ -23,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -42,10 +41,6 @@ public class ActionListAdapter extends ArrayAdapter<ActionListItem> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.action_list_item, parent, false);
         }
-
-        // Lookup view for data population
-        //Button bOpenVehicle = (Button) convertView.findViewById(R.id.vehicle_open);
-        //bOpenVehicle.setTag(position);
 
         //bOpenVehicle.setTag() .setId(position);
         TextView tvRow1_Col1 = (TextView) convertView.findViewById(R.id.row1_col1);

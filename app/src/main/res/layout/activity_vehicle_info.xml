@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Layout name: activity_vehicle_info.java
+    Layout name: activity_vehicle_info.xml
     Abstract: Layout for the full vehicle info.
     Environment: Android
     Copyright (C) 2016 Vesa Eskola.
@@ -21,7 +21,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/layout1"
         android:onClick="openMenu"
-        android:text="Menu"
+        android:text="@string/vehicle_info_menu"
         android:layout_marginRight="8dp" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -74,16 +74,6 @@
             android:layout_marginBottom="4dp"
             android:text="Vincode"
             android:textSize="14sp" />
-        <!--
-        <TextView
-            android:id="@+id/vehicle_year"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="4dp"
-            android:text="Year"
-            android:textSize="22sp" />-->
-
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -118,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onNewFueling"
-            android:text="Refueling"
+            android:text="@string/vehicle_info_fueling"
             android:layout_marginRight="8dp" />
 
         <Button
@@ -126,7 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onNewService"
-            android:text="Service"
+            android:text="@string/vehicle_info_service"
             android:layout_marginRight="8dp" />
 
         <Button
@@ -134,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onNewEvent"
-            android:text="Event"
+            android:text="@string/vehicle_info_event"
             android:layout_marginRight="8dp" />
 
     </LinearLayout>
@@ -146,7 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="8dp"
-        android:text="Recent:"
+        android:text="@string/vehicle_info_recent"
         android:textSize="22sp" />
 
     <!-- Recent Event begin -->
@@ -185,7 +175,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:onClick="openEventList"
-        android:text="More"
+        android:text="@string/vehicle_info_more"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="20dp" />
@@ -228,7 +218,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:onClick="openServiceList"
-        android:text="More"
+        android:text="@string/vehicle_info_more"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="20dp" />
@@ -270,7 +260,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:onClick="openFuelingList"
-        android:text="More"
+        android:text="@string/vehicle_info_more"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="20dp" />

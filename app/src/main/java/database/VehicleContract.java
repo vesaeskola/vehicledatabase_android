@@ -61,7 +61,7 @@ public class VehicleContract {
         public static final String COL_AMOUNT = "Amount";
         public static final String COL_MILEAGE = "Mileage";
         public static final String COL_FULL = "Full";
-        public static final String COL_PRISE = "Prise";
+        public static final String COL_EXPENSE = "Expense";
         public static final String COL_DESCRIPTION = "Description";
     }
 
@@ -72,7 +72,7 @@ public class VehicleContract {
         public static final String COL_DATE = "Date";
         public static final String COL_EVENTID = "EventId";
         public static final String COL_MILEAGE = "Mileage";
-        public static final String COL_PRISE = "Prise";
+        public static final String COL_EXPENSE = "Expense";
         public static final String COL_DESCRIPTION = "Description";
     }
 
@@ -83,7 +83,7 @@ public class VehicleContract {
         public static final String COL_DATE = "Date";
         public static final String COL_SERVICETYPE = "ServiceType";
         public static final String COL_MILEAGE = "Mileage";
-        public static final String COL_PRISE = "Prise";
+        public static final String COL_EXPENSE = "Expense";
         public static final String COL_DESCRIPTION = "Description";
     }
 
@@ -100,4 +100,12 @@ public class VehicleContract {
         public static final String COL_EVENTTYPE = "EventType";
         public static final String COL_DESCRIPTION = "Description";
     }
+
+    // This class represent one row of IMAGELINKS table
+    public class ImageLinkEntry implements BaseColumns {
+        public static final String TABLE = "IMAGELINKS";
+        public static final String COL_ACTIONTYPE = "ActionType";   // {1: refueling, 2: service, 3: event}
+        public static final String COL_ACTIONID = "ActionId";       // Link to _ID of FUELLING, EVENTS or SERVICES
+    }
+
 }

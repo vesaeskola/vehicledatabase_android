@@ -2,11 +2,11 @@
 
 Module Name:
 
-VehicleAdapter.java
+VehicleListAdapter.java
 
 Abstract:
 
-This module the connect MainActivity ListView and vehicle list model together.
+This module the connect VehicleListActivity's ListView and vehicle list model together.
 
 Environment:
 
@@ -44,9 +44,8 @@ public class VehicleListAdapter extends ArrayAdapter<VehicleListItem> {
 
         // Lookup view for data population
         Button bOpenVehicle = (Button) convertView.findViewById(R.id.vehicle_open);
-        bOpenVehicle.setTag(position);
+        bOpenVehicle.setTag(vehicle.mVehicleId);
 
-        //bOpenVehicle.setTag() .setId(position);
         TextView tvMake = (TextView) convertView.findViewById(R.id.vehicle_make);
         TextView tvModel = (TextView) convertView.findViewById(R.id.vehicle_model);
         TextView tvRegPlate = (TextView) convertView.findViewById(R.id.vehicle_regplate);

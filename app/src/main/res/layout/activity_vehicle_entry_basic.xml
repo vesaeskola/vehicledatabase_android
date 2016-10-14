@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Layout name: activity_vehicle_entry_basic.java
+    Layout name: activity_vehicle_entry_basic.xml
     Abstract: Layout for the VehicleEntryBasicActivity class.
     Environment: Android
     Copyright (C) 2016 Vesa Eskola.
@@ -14,30 +14,31 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/vehicle_basic_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="New Vehicle"
+        android:text="@string/vehicle_entry_basic_new_vehicle"
         android:textSize="22sp" />
 
     <EditText
         android:id="@+id/vehicle_regplate"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="RegPlate" />
+        android:hint="@string/vehicle_entry_basic_plate" />
 
     <EditText
         android:id="@+id/vehicle_make"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Make" />
+        android:hint="@string/vehicle_entry_basic_make" />
 
     <EditText
         android:id="@+id/vehicle_model"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:hint="Model" />
+        android:hint="@string/vehicle_entry_basic_model" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -49,7 +50,7 @@
             android:layout_height="wrap_content"
             android:onClick="OnVehicleEntered"
             android:layout_alignParentRight="true"
-            android:text="Next"
+            android:text="@string/vehicle_entry_basic_next"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_alignParentBottom="true" />
     </RelativeLayout>

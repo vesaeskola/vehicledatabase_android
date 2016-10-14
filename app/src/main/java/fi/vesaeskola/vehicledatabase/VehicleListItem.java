@@ -20,12 +20,14 @@ Copyright (C) 2016 Vesa Eskola.
 package fi.vesaeskola.vehicledatabase;
 
 public class VehicleListItem {
+    public int mVehicleId;
     public String make;
     public String model;
     public String regplate;
     public String vincode;
 
-    public VehicleListItem(String make, String model, String regplate, String vincode) {
+    public VehicleListItem(int vehicleId, String make, String model, String regplate, String vincode) {
+        this.mVehicleId = vehicleId;
         this.make = make;
         this.model = model;
         this.regplate = regplate;

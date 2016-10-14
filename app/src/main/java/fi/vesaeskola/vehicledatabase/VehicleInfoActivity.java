@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -44,11 +45,8 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
     private static final String TAG = "VehicleInfoActivity";
     private DBEngine mDatabaseEngine;
     private int mVehicleId;
-
-    static final int FUELING_ENTRY_ACTION_REQUEST = 1;
-    static final int SERVICE_ENTRY_ACTION_REQUEST = 2;
-    static final int EVENT_ENTRY_ACTION_REQUEST = 3;
-
+    private int mFuelUnitId;        // TBD: Create a class to collect these unit id's etc.
+    private int mOdometerUnitId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +55,45 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
         Bundle bundle = getIntent().getExtras();
         mVehicleId = bundle.getInt("vehicle_Id");
-        mVehicleId = mVehicleId + 1;
         Log.d(TAG, "Vehicle info to show: " + mVehicleId);
 
         // SQLiteOpenHelper based helper to open or create database.
         // Note: Will delete existing data if new database structure is used.
         mDatabaseEngine = new DBEngine(this);
+
+        updateUI (Constants.ActionType.ACTION_TYPE_VEHICLE);
+        updateUI (Constants.ActionType.ACTION_TYPE_FUELINGS);
+        updateUI (Constants.ActionType.ACTION_TYPE_SERVICES);
+        updateUI (Constants.ActionType.ACTION_TYPE_EVENTS);
+    }
+
+    private void updateUI (int requestCode) {
+
+        switch (requestCode) {
+            case Constants.ActionType.ACTION_TYPE_FUELINGS: {
+                readLastFuelingInfoRow();
+                break;
+            }
+            case Constants.ActionType.ACTION_TYPE_SERVICES: {
+                readLastServiceInfoRow();
+                break;
+            }
+            case Constants.ActionType.ACTION_TYPE_EVENTS: {
+                readLastEventInfoRow();
+                break;
+            }
+            case Constants.ActionType.ACTION_TYPE_VEHICLE: {
+                readVehicleInfo();
+                break;
+            }
+        }
+    }
+
+    private void readVehicleInfo () {
+        if (mDatabaseEngine == null) {
+            Log.d(TAG, "readVehicleInfo: mDatabaseEngine==null");
+            return;
+        }
 
         SQLiteDatabase db = mDatabaseEngine.getReadableDatabase();
 
@@ -73,31 +104,45 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         TextView tvMake = (TextView) findViewById(R.id.vehicle_make);
         TextView tvModel = (TextView) findViewById(R.id.vehicle_model);
         TextView tvPlate = (TextView) findViewById(R.id.vehicle_regplate);
-        //TextView tvYear = (TextView) findViewById(R.id.vehicle_year);
         TextView tvVinCode = (TextView) findViewById(R.id.vehicle_vincode);
         TextView tvDescription = (TextView) findViewById(R.id.vehicle_description);
 
-        while (cursor.moveToNext()) {
+        if (cursor.moveToNext()) {
             tvMake.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MAKE)));
             tvModel.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MODEL)));
             tvPlate.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_REGPLATE)));
-            //tvYear.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_YEAR)));
             tvVinCode.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_VINCODE)));
-            tvDescription.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_DESCRIPTION)));
-        }
+            String description = cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_DESCRIPTION));
+            mFuelUnitId = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_FUEL_UNIT_ID));
+            mOdometerUnitId = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID));
 
-        readLastFuelingInfoRow();
-        readLastServiceInfoRow();
-        readLastEventInfoRow();
+            if (description.length() < 1 ) {
+                tvDescription.setText("");
+            }
+            else if (description.length() > 32 ) {
+                String shortDescription = description.substring(0,32);
+                tvDescription.setText(shortDescription + "..");
+            }
+            else
+            {
+                tvDescription.setText(description);
+            }
+            mFuelUnitId = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_FUEL_UNIT_ID));
+            mOdometerUnitId = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID));
+        }
     }
 
     private void readLastFuelingInfoRow()
     {
         if (mDatabaseEngine == null) {
+            Log.d(TAG, "readVehicleInfo: mDatabaseEngine==null");
             return;
         }
 
         SQLiteDatabase db = mDatabaseEngine.getReadableDatabase();
+
+        Button btnFuelingMore = (Button) findViewById(R.id.btn_fueling_more);
+        btnFuelingMore.setEnabled(false);
 
         // char* sql = "SELECT * FROM FUELING WHERE VehicleID = ? ORDER by Mileage DESC LIMIT 1";
         String selectQuery = "SELECT  * FROM " + VehicleContract.FuelingEntry.TABLE + " WHERE " + VehicleContract.FuelingEntry.COL_VEHICLEID + " = " + mVehicleId + " ORDER by " + VehicleContract.FuelingEntry.COL_MILEAGE + " DESC LIMIT 1";
@@ -109,8 +154,15 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         TextView tvFuelingRow2 = (TextView) findViewById(R.id.recent_fueling_row2);
 
         if (cursor.moveToNext()) {
+            btnFuelingMore.setEnabled(true);
+
             // Refueling, column 1
-            tvFuelingCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + " mi.");
+            tvFuelingCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE))  + " ");
+            if (mOdometerUnitId == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) {
+                tvFuelingCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_mail));
+            } else {
+                tvFuelingCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_km));
+            }
 
             // Refueling, column 2
             long fuelingDate = cursor.getLong(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DATE));
@@ -118,24 +170,41 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
             Date now = new Date();
             now.setTime(fuelingDate);
             tvFuelingCol2.setText(simpleDataFormat.format(now));
+            /*
+            tvFuelingCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)));
+            if (mFuelUnitId == Constants.FuelUnitId.FUEL_UNIT_GALLON) {
+                tvFuelingCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_gallon));
+            } else {
+                tvFuelingCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_liter));
+            }
+            */
 
             // Refueling, row 2
             String description = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DESCRIPTION));
-            if (description.length() < 1 ) {
-                tvFuelingRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)) + " ga.");
+            tvFuelingRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)) + " ");
+            if (mFuelUnitId == Constants.FuelUnitId.FUEL_UNIT_GALLON) {
+                tvFuelingRow2.append(getResources().getString(R.string.vehicle_entry_detail_short_gallon));
+            } else {
+                tvFuelingRow2.append(getResources().getString(R.string.vehicle_entry_detail_short_liter));
             }
-            else if (description.length() > 26 ) {
-                String shortDescription = description.substring(0,26);
-                tvFuelingRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)) + " ga. " + shortDescription + "..");
+
+            if (description.length() < 1 ) {
+                ;
+            }
+            else if (description.length() > 32 ) {
+                String shortDescription = description.substring(0,32);
+                //tvFuelingRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)) + " ga. " + shortDescription + "..");
+                tvFuelingRow2.append(" " + shortDescription + "..");
             }
             else
             {
-                tvFuelingRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)) + " ga. " + description);
+                //tvFuelingRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)) + " ga. " + description);
+                tvFuelingRow2.append(" " + description);
             }
         }
         else
         {
-            tvFuelingCol1.setText(R.string.vehicle_info_no_refuelings);
+            tvFuelingCol1.setText(R.string.vehicle_info_no_fuelings);
             tvFuelingCol2.setText("");
             tvFuelingRow2.setText("");
         }
@@ -144,10 +213,14 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
     private void readLastServiceInfoRow()
     {
         if (mDatabaseEngine == null) {
+            Log.d(TAG, "readVehicleInfo: mDatabaseEngine==null");
             return;
         }
 
         SQLiteDatabase db = mDatabaseEngine.getReadableDatabase();
+
+        Button btnServiceMore = (Button) findViewById(R.id.btn_service_more);
+        btnServiceMore.setEnabled(false);
 
         String selectQuery = "SELECT  * FROM " + VehicleContract.ServiceEntry.TABLE + " WHERE " + VehicleContract.ServiceEntry.COL_VEHICLEID + " = " + mVehicleId + " ORDER by " + VehicleContract.ServiceEntry.COL_MILEAGE + " DESC LIMIT 1";
         Log.d(TAG, "selectQuery: " + selectQuery);
@@ -158,8 +231,16 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         TextView tvServiceRow2 = (TextView) findViewById(R.id.recent_service_row2);
 
         if (cursor.moveToNext()) {
+            btnServiceMore.setEnabled(true);
+
             // Service, column 1
-            tvServiceCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_MILEAGE)) + " mi.");
+            //tvServiceCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_MILEAGE)) + " mi.");
+            tvServiceCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + " ");
+            if (mOdometerUnitId == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) {
+                tvServiceCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_mail));
+            } else {
+                tvServiceCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_km));
+            }
 
             // Service, column 2
             long serviceDate = cursor.getLong(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DATE));
@@ -169,12 +250,13 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
             tvServiceCol2.setText(simpleDataFormat.format(now));
 
             // Service, row 2
+            // TBD: Handle currency unit ($, £ €) somehow
             String description = cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DESCRIPTION));
             if (description.length() < 1 ) {
-                tvServiceRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_PRISE)) + " $");
+                ;//tvServiceRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_EXPENSE)) + " $");
             }
-            else if (description.length() > 32 ) {
-                String shortDescription = description.substring(0,32);
+            else if (description.length() > 34 ) {
+                String shortDescription = description.substring(0,34);
                 //tvServiceRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_PRISE)) + " $ @" + shortDescription);
                 tvServiceRow2.setText(shortDescription + "..");
 
@@ -196,10 +278,14 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
     private void readLastEventInfoRow()
     {
         if (mDatabaseEngine == null) {
+            Log.d(TAG, "readVehicleInfo: mDatabaseEngine==null");
             return;
         }
 
         SQLiteDatabase db = mDatabaseEngine.getReadableDatabase();
+
+        Button btnEventMore = (Button) findViewById(R.id.btn_events_more);
+        btnEventMore.setEnabled(false);
 
         String selectQuery = "SELECT  * FROM " + VehicleContract.EventEntry.TABLE + " WHERE " + VehicleContract.EventEntry.COL_VEHICLEID + " = " + mVehicleId + " ORDER by " + VehicleContract.EventEntry.COL_MILEAGE + " DESC LIMIT 1";
         Log.d(TAG, "selectQuery: " + selectQuery);
@@ -210,8 +296,16 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         TextView tvEventRow2 = (TextView) findViewById(R.id.recent_event_row2);
 
         if (cursor.moveToNext()) {
+            btnEventMore.setEnabled(true);
+
             // Event, column 1
-            tvEventCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_MILEAGE)) + " mi.");
+            //tvEventCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_MILEAGE)) + " mi.");
+            tvEventCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + " ");
+            if (mOdometerUnitId == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) {
+                tvEventCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_mail));
+            } else {
+                tvEventCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_km));
+            }
 
             // Event, column 2
             long eventDate = cursor.getLong(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DATE));
@@ -251,11 +345,9 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
         // Open FuelingEntryActivity page
         //
-        // TBD: There is problem: If user delete one vehicle list id and sql id are not anymore iin sync. Need some
-        // to store the VEHICLES table _id column into list view
         Intent intent = new Intent(this, FuelingEntryActivity.class);
-        intent.putExtra("vehicle_Id", (int)mVehicleId);
-        startActivityForResult(intent, FUELING_ENTRY_ACTION_REQUEST);
+        intent.putExtra("vehicle_Id", mVehicleId);
+        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_FUELINGS);
     }
 
     public void onNewService(View view) {
@@ -264,11 +356,9 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
         // Open ServiceEntryActivity page
         //
-        // TBD: There is problem: If user delete one vehicle list id and sql id are not anymore iin sync. Need some
-        // to store the VEHICLES table _id column into list view
         Intent intent = new Intent(this, ServiceEntryActivity.class);
-        intent.putExtra("vehicle_Id", (int)mVehicleId);
-        startActivityForResult(intent, SERVICE_ENTRY_ACTION_REQUEST);
+        intent.putExtra("vehicle_Id", mVehicleId);
+        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_SERVICES );
     }
 
     public void onNewEvent(View view) {
@@ -277,11 +367,9 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
         // Open EventEntryActivity page
         //
-        // TBD: There is problem: If user delete one vehicle list id and sql id are not anymore iin sync. Need some
-        // to store the VEHICLES table _id column into list view
         Intent intent = new Intent(this, EventEntryActivity.class);
-        intent.putExtra("vehicle_Id", (int)mVehicleId);
-        startActivityForResult(intent, EVENT_ENTRY_ACTION_REQUEST);
+        intent.putExtra("vehicle_Id", mVehicleId);
+        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_EVENTS);
 
     }
 
@@ -295,54 +383,44 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         inflater.inflate(R.menu.vehicle_info, popup.getMenu());
 
         popup.show();
-
-
     }
-
 
     public void openEventList(View view) {
         View parent = (View) view.getParent();
-        Log.d(TAG, "openEventList, selected vehicle: " + mVehicleId);
+        Log.d(TAG, "openActionList of events, selected vehicle: " + mVehicleId);
 
-        // Open ActionListActivity page
+        // Open ActionListActivity page to show all events
         //
-        // TBD: There is problem: If user delete one vehicle list id and sql id are not anymore iin sync. Need some
-        // to store the VEHICLES table _id column into list view
         Intent intent = new Intent(this, ActionListActivity.class);
-        intent.putExtra("vehicle_Id", (int)mVehicleId);
-        // TBD: Create enumerations for: 1=eventList, 2=serviceList, 3=refuelingList
-        intent.putExtra("listType", FUELING_ENTRY_ACTION_REQUEST);
-        startActivityForResult(intent, 1);
+        intent.putExtra("vehicle_Id", mVehicleId);
+        intent.putExtra("listType", Constants.ActionType.ACTION_TYPE_EVENTS);
+        intent.putExtra("fuelUnitId", mFuelUnitId);
+        intent.putExtra("odometerUnitId", mOdometerUnitId);
+        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_EVENTS);
     }
 
     public void openServiceList(View view) {
         View parent = (View) view.getParent();
-        Log.d(TAG, "openEventList");
+        Log.d(TAG, "openActionList of services, selected vehicle: " + mVehicleId);
 
-        // Open ActionListActivity page
+        // Open ActionListActivity page to show all services
         //
-        // TBD: There is problem: If user delete one vehicle list id and sql id are not anymore iin sync. Need some
-        // to store the VEHICLES table _id column into list view
         Intent intent = new Intent(this, ActionListActivity.class);
-        intent.putExtra("vehicle_Id", (int)mVehicleId);
-        // TBD: Create enumerations for: 1=eventList, 2=serviceList, 3=refuelingList
-        intent.putExtra("listType", SERVICE_ENTRY_ACTION_REQUEST);
-        startActivityForResult(intent, 1);
+        intent.putExtra("vehicle_Id", mVehicleId);
+        intent.putExtra("listType", Constants.ActionType.ACTION_TYPE_SERVICES);
+        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_SERVICES);
     }
 
     public void openFuelingList(View view) {
         View parent = (View) view.getParent();
-        Log.d(TAG, "openEventList");
+        Log.d(TAG, "openActionList of fuelings, selected vehicle: " + mVehicleId);
 
-        // Open ActionListActivity page
+        // Open ActionListActivity page to show all refuelings
         //
-        // TBD: There is problem: If user delete one vehicle list id and sql id are not anymore iin sync. Need some
-        // to store the VEHICLES table _id column into list view
         Intent intent = new Intent(this, ActionListActivity.class);
-        intent.putExtra("vehicle_Id", (int)mVehicleId);
-        // TBD: Create enumerations for: 1=eventList, 2=serviceList, 3=refuelingList
-        intent.putExtra("listType", EVENT_ENTRY_ACTION_REQUEST);
-        startActivityForResult(intent, 1);
+        intent.putExtra("vehicle_Id", mVehicleId);
+        intent.putExtra("listType", Constants.ActionType.ACTION_TYPE_FUELINGS);
+        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_FUELINGS);
     }
 
     @Override
@@ -353,22 +431,7 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         }
         else if (resultCode == Activity.RESULT_OK) {
             Log.d(TAG, "Activity result: RESULT_OK");
-
-            switch (requestCode) {
-                case FUELING_ENTRY_ACTION_REQUEST: {
-                    readLastFuelingInfoRow();
-                    break;
-                }
-                case SERVICE_ENTRY_ACTION_REQUEST: {
-                    readLastServiceInfoRow();
-                    break;
-                }
-                case EVENT_ENTRY_ACTION_REQUEST: {
-                    readLastEventInfoRow();
-                    break;
-                }
-
-            }
+            updateUI (requestCode);
         }
 
     }//onActivityResult
@@ -377,22 +440,19 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId())
         {
-            case R.id.menuitem_show_privacy_policy: {
-                Log.d(TAG, "Menu item selected: Privacy policy");
+            case R.id.menuitem_edit_vehicle: {
+                Log.d(TAG, "Menu item selected: Edit vehicle");
 
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.privacy_policy_title)
-                        .setMessage(R.string.privacy_policy_content)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                // Open VehicleEntryBasicActivity page
+                Intent intent = new  Intent(this, VehicleEntryBasicActivity.class);
 
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Log.d(TAG, "Vehicle delete selected");
-                            }})
-                        .setNegativeButton(android.R.string.no, null).show();
+                intent.putExtra("vehicle_Id", mVehicleId);
+                startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_VEHICLE);
+
+                Log.d(TAG, "open vehicle editor with vehicle ID: " + mVehicleId);
+
                 return true;
             }
-
             case R.id.menuitem_delete_vehicle: {
                 Log.d(TAG, "Menu item selected: Delete vehicle");
 
@@ -407,6 +467,21 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
 
+                return true;
+            }
+            case R.id.menuitem_show_privacy_policy: {
+                Log.d(TAG, "Menu item selected: Privacy policy");
+
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.privacy_policy_title)
+                        .setMessage(R.string.privacy_policy_content)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Log.d(TAG, "Vehicle delete selected");
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
                 return true;
             }
 

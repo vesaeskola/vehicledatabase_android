@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-Layout name: activity_vehicle_entry_detail.java
+Layout name: activity_vehicle_entry_detail.xml
 Abstract: Layout for the VehicleEntryDetailActivity class.
 Environment: Android
 Copyright (C) 2016 Vesa Eskola.
@@ -14,10 +14,11 @@ Copyright (C) 2016 Vesa Eskola.
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/vehicle_detail_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="New Vehicle"
+        android:text="@string/vehicle_entry_basic_new_vehicle"
         android:textSize="22sp" />
 
     <EditText
@@ -25,7 +26,7 @@ Copyright (C) 2016 Vesa Eskola.
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:hint="Year"
+        android:hint="@string/vehicle_entry_detail_year"
         android:inputType="number" />
 
     <EditText
@@ -33,33 +34,82 @@ Copyright (C) 2016 Vesa Eskola.
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:hint="VinCode" />
+        android:hint="@string/vehicle_entry_detail_vincode" />
+
     <EditText
         android:id="@+id/vehicle_description"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Description" />
+        android:hint="@string/activity_entry_description" />
 
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
-    <RadioButton
-        android:text="@string/vehicle_entry_radiobutton_ga"
-        android:id="@+id/radioButton"
-        android:textSize="22sp"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checked="true" />
+        android:layout_gravity="center_vertical">
 
-    <RadioButton
-        android:text="@string/vehicle_entry_radiobutton_li"
-        android:id="@+id/radioButton2"
-        android:checked="false"
-        android:textSize="22sp"
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/vehicle_entry_detail_fuel_unit"
+            android:textSize="18sp" />
+
+        <RadioGroup
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    </RadioGroup>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="60dp" >
+            <RadioButton
+                android:id="@+id/radioButton1"
+                android:textSize="22sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/vehicle_entry_detail_gallon" />
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:checked="false"
+                android:textSize="22sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/vehicle_entry_detail_liter" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/vehicle_entry_detail_odometer_unit"
+            android:textSize="18sp" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="60dp">
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:textSize="22sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/vehicle_entry_detail_mail" />
+            <RadioButton
+                android:id="@+id/radioButton4"
+                android:checked="false"
+                android:textSize="22sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/vehicle_entry_detail_km" />
+        </RadioGroup>
+    </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -71,7 +121,7 @@ Copyright (C) 2016 Vesa Eskola.
             android:layout_height="wrap_content"
             android:onClick="OnVehicleDetailEntered"
             android:layout_alignParentRight="true"
-            android:text="OK"
+            android:text="@string/activity_entry_done"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_alignParentBottom="true" />
     </RelativeLayout>

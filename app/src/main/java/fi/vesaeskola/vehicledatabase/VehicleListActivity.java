@@ -2,7 +2,7 @@
 
 Module Name:
 
-MainActivity.java
+VehicleListActivity.java
 
 Abstract:
 
@@ -41,6 +41,7 @@ import database.VehicleContract;
 
 public class VehicleListActivity extends AppCompatActivity {
     private static final String TAG = "VehicleListActivity";
+    public static String PACKAGE_NAME;
     private DBEngine mDatabaseEngine;
     private ListView mVehicleListView;
     private VehicleListAdapter mVehicleAdapter;
@@ -60,6 +61,8 @@ public class VehicleListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_list);
+
+        PACKAGE_NAME = getApplicationContext().getPackageName();
 
         // Example of a call to a native method
         //TextView tv = (TextView) findViewById(R.id.sample_text);
@@ -103,41 +106,9 @@ public class VehicleListActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
-                String make=data.getStringExtra("ret_make");
-                String model=data.getStringExtra("ret_model");
-                String regplate=data.getStringExtra("ret_regplate");
-                int year = data.getIntExtra("ret_year", 0);
-                String vincode=data.getStringExtra("ret_vincode");
-                String description=data.getStringExtra("ret_description");
-
-                Log.d(TAG, "New vechile entered by user: " + make + " " + model + " " + regplate + " " + year + " " + vincode + " " + description);
-
-                // Open or create database file
-                SQLiteDatabase db = mDatabaseEngine.getWritableDatabase();
-
-                ContentValues values = new ContentValues();
-                values.put(VehicleContract.VehicleEntry.COL_VINCODE, vincode);
-                values.put(VehicleContract.VehicleEntry.COL_MAKE, make);
-                values.put(VehicleContract.VehicleEntry.COL_MODEL, model);
-                values.put(VehicleContract.VehicleEntry.COL_YEAR, year);
-                values.put(VehicleContract.VehicleEntry.COL_REGPLATE, regplate);
-                values.put(VehicleContract.VehicleEntry.COL_DESCRIPTION, description);
-                values.put(VehicleContract.VehicleEntry.COL_FUEL_UNIT_ID, 1);
-                values.put(VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID, 1);
-                values.put(VehicleContract.VehicleEntry.COL_IMAGEPATH, "null");
-
-                db.insertWithOnConflict(VehicleContract.VehicleEntry.TABLE,
-                        null,
-                        values,
-                        SQLiteDatabase.CONFLICT_REPLACE);
-                db.close();
-
-                Log.d(TAG, "New vechile entered to database");
-
                 updateUI();
-
             }
-            if (resultCode == Activity.RESULT_CANCELED) {
+            else if (resultCode == Activity.RESULT_CANCELED) {
                 Log.d(TAG, "New vechile entering cancelled");
             }
         }
@@ -154,14 +125,16 @@ public class VehicleListActivity extends AppCompatActivity {
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         while (cursor.moveToNext()) {
-            VehicleListItem vehicle = new VehicleListItem("make", "model", "regplate", "vincode");
-            vehicle.make = cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MAKE));
-            vehicle.model = cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MODEL));
-            vehicle.regplate = cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_REGPLATE));
-            vehicle.vincode = cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_VINCODE));
+            int vehicleID = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry._ID));
+            VehicleListItem vehicle = new VehicleListItem(vehicleID,
+                cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MAKE)),
+                cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MODEL)),
+                cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_REGPLATE)),
+                cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_VINCODE))
+                );
 
             vehicleList.add(vehicle);
-            Log.d(TAG, "Vehicle read from database: " + vehicle.make + "  " + vehicle.model + "  " + vehicle.regplate + "  " + vehicle.vincode);
+            Log.d(TAG, "Vehicle read from database: " + vehicle.mVehicleId + " " + vehicle.make + "  " + vehicle.model + "  " + vehicle.regplate + "  " + vehicle.vincode);
         }
 
         if (mVehicleListView != null) {
@@ -184,8 +157,6 @@ public class VehicleListActivity extends AppCompatActivity {
         Button vehicleOpenBtn = (Button) parent.findViewById(R.id.vehicle_open);
         Log.d(TAG, "Selected vehicle: " + vehicleOpenBtn.getId() + " " + vehicleOpenBtn.getTag() );
 
-        // TBD: There is problem: If user delete one vehicle list id and sql id are not anymore iin sync. Need some
-        // to store the VEHICLES table _id column into list view
         // Open VehicleEntryBasicActivity page
         Intent intent = new Intent(this, VehicleInfoActivity.class);
         intent.putExtra("vehicle_Id", (int)vehicleOpenBtn.getTag());

@@ -3,14 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <item
-        android:id="@+id/menuitem_show_privacy_policy"
-        android:title="Privacy Policy"
-        app:showAsAction="always|withText" />
 
+    <item
+        android:id="@+id/menuitem_edit_vehicle"
+        android:title="Edit Vehicle"
+        app:showAsAction="always|withText" />
     <item
         android:id="@+id/menuitem_delete_vehicle"
         android:title="Delete Vehicle"
+        app:showAsAction="always|withText" />
+    <item
+        android:id="@+id/menuitem_show_privacy_policy"
+        android:title="Privacy Policy"
         app:showAsAction="always|withText" />
 
 </menu>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Layout name: activity_vehicle_list.java
+    Layout name: activity_vehicle_list.xml
     Abstract: Layout for the VehicleListActivity class.
     Environment: Android
     Copyright (C) 2016 Vesa Eskola.
@@ -10,7 +10,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+    android:id="@+id/activity_vehicle_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"

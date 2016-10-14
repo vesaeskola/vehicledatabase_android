@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Layout name: activity_service_entry.java
+    Layout name: activity_service_entry.xml
     Abstract: Layout for the ServiceEntryActivity class.
     Environment: Android
     Copyright (C) 2016 Vesa Eskola.
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_fueling_entry"
     android:layout_width="match_parent"
@@ -23,57 +24,68 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="New Service"
+        android:text="@string/service_entry_new_service"
         android:textSize="22sp" />
 
     <Button
-        android:text="@string/action_entry_pick_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_pick_date"
-        android:onClick="showDatePickerDialog" />
+        android:onClick="showDatePickerDialog"
+        android:text="@string/activity_entry_pick_date" />
 
     <EditText
         android:id="@+id/mileage"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Mileage" />
-
-    <!--
-    <EditText
-        android:id="@+id/fueling_amount"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:hint="Amount" />
-    -->
+        android:hint="@string/activity_entry_mileage" />
 
     <EditText
-        android:id="@+id/price"
+        android:id="@+id/expense"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Price" />
+        android:hint="@string/activity_entry_expense" />
 
     <EditText
         android:id="@+id/description"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:hint="Description" />
+        android:hint="@string/activity_entry_description" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_pick_image"
+        android:onClick="pickImageWithCamera"
+        android:text="@string/activity_entry_pick_image" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal">
 
+        <ImageView
+            android:id="@+id/actionImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/your_vehicle"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_above="@+id/btnDone" />
+
         <Button
+            android:id="@+id/btnDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="OnServiceEntered"
             android:layout_alignParentRight="true"
-            android:text="OK"
+            android:text="@string/activity_entry_done"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_alignParentBottom="true" />
+
+
     </RelativeLayout>
 
 </LinearLayout>

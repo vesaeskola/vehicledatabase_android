@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Layout name: vehicle_list_item.java
+    Layout name: vehicle_list_item.xml
     Abstract: Layout for the ListView item of VehicleListActivity view ListView widget.
     Environment: Android
     Copyright (C) 2016 Vesa Eskola.
@@ -21,7 +21,7 @@
             android:id="@+id/vehicle_make"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Make"
+            android:text="vehicle_make"
             android:textSize="20sp"
             android:textStyle="normal|bold" />
 
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Model"
+            android:text="vehicle_model"
             android:textSize="18sp" />
 
         <TextView
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Vincode"
+            android:text="vehicle_vincode"
             android:textSize="14sp" />
 
     </LinearLayout>
@@ -54,7 +54,7 @@
             android:id="@+id/vehicle_regplate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Regplate"
+            android:text="vehicle_plate"
             android:textSize="18sp" />
 
         <Button
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:onClick="openVehicle"
-            android:text="Open" />
+            android:text="@string/open_vehicle" />
     </LinearLayout>
 
 </RelativeLayout>

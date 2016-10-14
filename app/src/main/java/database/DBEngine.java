@@ -72,7 +72,7 @@ public class DBEngine extends SQLiteOpenHelper {
                 VehicleContract.FuelingEntry.COL_AMOUNT            + " INT, " +
                 VehicleContract.FuelingEntry.COL_MILEAGE           + " INT, " +
                 VehicleContract.FuelingEntry.COL_FULL              + " INT, " +
-                VehicleContract.FuelingEntry.COL_PRISE             + " INT, " +
+                VehicleContract.FuelingEntry.COL_EXPENSE           + " INT, " +
                 VehicleContract.FuelingEntry.COL_DESCRIPTION       + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
@@ -84,7 +84,7 @@ public class DBEngine extends SQLiteOpenHelper {
                 VehicleContract.EventEntry.COL_DATE                + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                 VehicleContract.EventEntry.COL_EVENTID             + " INT, " +
                 VehicleContract.EventEntry.COL_MILEAGE             + " INT, " +
-                VehicleContract.EventEntry.COL_PRISE               + " INT, " +
+                VehicleContract.EventEntry.COL_EXPENSE             + " INT, " +
                 VehicleContract.EventEntry.COL_DESCRIPTION         + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
@@ -96,7 +96,7 @@ public class DBEngine extends SQLiteOpenHelper {
                 VehicleContract.ServiceEntry.COL_DATE              + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
                 VehicleContract.ServiceEntry.COL_SERVICETYPE       + " INT, " +
                 VehicleContract.ServiceEntry.COL_MILEAGE           + " INT, " +
-                VehicleContract.ServiceEntry.COL_PRISE             + " INT, " +
+                VehicleContract.ServiceEntry.COL_EXPENSE           + " INT, " +
                 VehicleContract.ServiceEntry.COL_DESCRIPTION       + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);

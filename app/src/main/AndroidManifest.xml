@@ -24,15 +24,39 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".VehicleEntryBasicActivity" />
-        <activity
-            android:name=".VehicleEntryDetailActivity"
-            android:label="@string/title_activity_vehicle_entry_detail"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".VehicleEntryDetailActivity" />
         <activity android:name=".VehicleInfoActivity" />
         <activity android:name=".ActionListActivity" />
         <activity android:name=".FuelingEntryActivity" />
         <activity android:name=".ServiceEntryActivity" />
-        <activity android:name=".EventEntryActivity"></activity>
+        <activity android:name=".EventEntryActivity" />
+
+        <!-- Vehicle database application is a file provider, user is able to snap images using camera application.
+         Images are stored into 'Android/data/fi.vesaeskola.vehicledatabase/files/Pictures' folder -->
+       <provider android:name="android.support.v4.content.FileProvider"
+            android:authorities="fi.vesaeskola.vehicledatabase.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
+
+    <!--
+    <uses-feature android:name="android.hardware.camera"  android:required="true"/>
+    -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
+    <!--
+    However, if you'd like the photos to remain private to your app only, you can instead use the directory provided by
+    getExternalFilesDir(). On Android 4.3 and lower, writing to this directory also requires the WRITE_EXTERNAL_STORAGE
+    permission. Beginning with Android 4.4, the permission is no longer required because the directory is not accessible
+    by other apps, so you can declare the permission should be requested only on the lower versions of Android by adding
+    the maxSdkVersion attribute:
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="18" />
+
+    -->
 
 </manifest>

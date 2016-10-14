@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Layout name: activity_event_entry.java
+    Layout name: activity_event_entry.xml
     Abstract: Layout for the EventEntryActivity class.
     Environment: Android
     Copyright (C) 2016 Vesa Eskola.
@@ -23,11 +23,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="New Event"
+        android:text="@string/event_entry_new_event"
         android:textSize="22sp" />
 
     <Button
-        android:text="@string/action_entry_pick_date"
+        android:text="@string/activity_entry_pick_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_pick_date"
@@ -37,29 +37,20 @@
         android:id="@+id/mileage"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Mileage" />
-
-    <!--
-    <EditText
-        android:id="@+id/fueling_amount"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:hint="Amount" />
-    -->
+        android:hint="@string/activity_entry_mileage" />
 
     <EditText
-        android:id="@+id/price"
+        android:id="@+id/expense"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Price" />
+        android:hint="@string/activity_entry_expense" />
 
     <EditText
         android:id="@+id/description"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:hint="Description" />
+        android:hint="@string/activity_entry_description" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -71,7 +62,7 @@
             android:layout_height="wrap_content"
             android:onClick="OnEventEntered"
             android:layout_alignParentRight="true"
-            android:text="OK"
+            android:text="@string/activity_entry_done"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_alignParentBottom="true" />
     </RelativeLayout>
