@@ -7,73 +7,273 @@
     Copyright (C) 2016 Vesa Eskola.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_fueling_entry"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
+    android:id="@+id/activity_fueling_entry"
     tools:context="fi.vesaeskola.vehicledatabase.FuelingEntryActivity">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:text="@string/fueling_entry_new_refueling"
-        android:textSize="22sp" />
-
-    <Button
-        android:text="@string/activity_entry_pick_date"
+    <RelativeLayout
+        android:id="@+id/title_area"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_pick_date"
-        android:onClick="showDatePickerDialog" />
+        android:layout_height="50dp"
+        android:background="#ffeb3b"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="8pt">
 
+        <ImageView
+            android:id="@+id/menu_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="4dp"
+            android:elevation="3dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:onClick="openMenu"
+            android:background="@drawable/menu_icon2" />
 
-    <EditText
-        android:id="@+id/mileage"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/activity_entry_mileage" />
-
-
-    <EditText
-        android:id="@+id/fueling_amount"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:hint="@string/activity_entry_amount" />
-
-    <EditText
-        android:id="@+id/expense"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/activity_entry_expense" />
-
-    <EditText
-        android:id="@+id/description"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:hint="@string/activity_entry_description" />
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal">
-
-        <Button
+        <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="OnFuelingEntered"
+            android:layout_toRightOf="@+id/menu_icon"
+            android:text="@string/fueling_entry_new_refueling"
+            android:textSize="22sp"
+            android:elevation="0dp"
+            android:layout_margin="4dp"
+            android:layout_centerVertical="true" />
+        <!--
+        <Button
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="4dp"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
             android:layout_alignParentRight="true"
-            android:text="@string/activity_entry_done"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_alignParentBottom="true" />
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="+"
+            android:state_enabled="false"
+            android:textColor="#fff"
+            android:textSize="28dp" /> -->
     </RelativeLayout>
 
-</LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/content_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_area"
+        android:layout_marginLeft="6pt">
+
+        <!-- Calendar to pick date -->
+        <ImageView
+            android:id="@+id/date_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/kalenteri"
+            android:elevation="3dp"
+            android:clickable="true"
+            android:onClick="onPickDate" />
+
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/date_icon"
+            android:layout_marginRight="-26dp"
+            android:layout_marginTop="-2dp"
+            android:text="@string/activity_entry_date"
+            android:textSize="10sp"
+            android:background="#f57f17"
+            android:padding="@dimen/text_padding"
+            android:elevation="6dp"
+            android:onClick="onPickDate" />
+
+        <!-- Camera to pick attachment image -->
+        <ImageView
+            android:id="@+id/attachment_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/camera_icon2"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="24dp"
+            android:onClick="pickImageWithCamera" />
+
+        <TextView
+            android:id="@+id/attachment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/attachment_icon"
+            android:layout_marginRight="-16dp"
+            android:layout_marginTop="-2dp"
+            android:elevation="6dp"
+            android:text="@string/activity_entry_snap_image"
+            android:textSize="12sp"
+            android:background="#f57f17"
+            android:padding="@dimen/text_padding"
+            android:onClick="pickImageWithCamera" />
+
+        <!-- Mileage entry -->
+        <ImageView
+            android:id="@+id/mileage_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/mileage_icon2"
+            android:layout_below="@+id/date_icon"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/mileage_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/mileage_icon"
+            android:layout_marginRight="-4dp"
+            android:elevation="6dp"
+            android:layout_marginTop="4dp"
+            android:layout_below="@+id/date_icon"
+            android:text="km"
+            android:textSize="10sp"
+            android:background="#f57f17"
+            android:padding="@dimen/text_padding" />
+
+        <EditText
+            android:id="@+id/mileage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/date_icon"
+            android:layout_toRightOf="@id/mileage_icon"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/activity_entry_mileage" />
+
+        <!-- Amount entry -->
+        <ImageView
+            android:id="@+id/amount_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/refueling_icon"
+            android:layout_below="@+id/mileage_icon"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/refueling_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/amount_icon"
+            android:layout_marginRight="-4dp"
+            android:layout_marginTop="4dp"
+            android:layout_below="@+id/mileage_icon"
+            android:text="ga."
+            android:textSize="10sp"
+            android:background="#f57f17"
+            android:padding="@dimen/text_padding"
+            android:elevation="6dp" />
+
+        <EditText
+            android:id="@+id/refueling_amount"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mileage_icon"
+            android:layout_toRightOf="@id/amount_icon"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/activity_entry_amount" />
+
+        <!-- Expense entry -->
+        <ImageView
+            android:id="@+id/icon_expense"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/expense_icon2"
+            android:layout_below="@+id/refueling_amount"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/currency_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/icon_expense"
+            android:layout_marginRight="-4dp"
+            android:layout_marginTop="4dp"
+            android:layout_below="@+id/refueling_amount"
+            android:text="€"
+            android:textSize="10sp"
+            android:background="#f57f17"
+            android:padding="@dimen/text_padding"
+            android:elevation="6dp" />
+
+        <EditText
+            android:id="@+id/expense"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/refueling_amount"
+            android:layout_toRightOf="@id/icon_expense"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/activity_entry_expense" />
+
+        <!-- Description entry -->
+        <ImageView
+            android:id="@+id/description_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/description_icon2"
+            android:layout_below="@+id/icon_expense"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/icon_expense"
+            android:layout_toRightOf="@id/description_icon"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/activity_entry_description" />
+
+        <Button
+            android:id="@+id/next"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
+            android:text="\u25B6"
+            android:state_enabled="false"
+            android:textColor="#fff"
+            android:textSize="42dp"
+            android:onClick="OnFuelingEntered"
+            android:layout_marginTop="100dp"
+            android:layout_below="@+id/description"
+            android:layout_toLeftOf="@+id/attachment_icon"
+            android:layout_toStartOf="@+id/attachment_icon" />
+
+        <TextView
+            android:id="@+id/next_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="6dp"
+            android:text="@string/activity_entry_done"
+            android:textSize="12sp"
+            android:background="#f57f17"
+            android:padding="@dimen/text_padding"
+            android:onClick="OnFuelingEntered"
+            android:layout_alignBottom="@+id/next"
+            android:layout_alignRight="@+id/next"
+            android:layout_alignEnd="@+id/next"
+            android:layout_marginBottom="62dp" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

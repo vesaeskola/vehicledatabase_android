@@ -10,13 +10,25 @@
     <string name="app_name">Ajoneuvotietokanta</string>
 
     <!-- general localizations -->
+    <string name="wellcome_message">tervetuloa käyttämään database applikaatiota.\nLisää ensimmäinen ajoneuvosi täältä.</string>
     <string name="activity_entry_done">OK</string>
+    <string name="activity_entry_next">Seuraava</string>
     <string name="activity_entry_pick_date">Valitse p�iv�m��r�</string>
     <string name="activity_entry_pick_image">Ota liitekuva</string>
     <string name="activity_entry_mileage">Matkamittari</string>
     <string name="activity_entry_expense">Hinta</string>
     <string name="activity_entry_amount">M��r�</string>
     <string name="activity_entry_description">Kuvaus</string>
+    <string name="activity_entry_snap_image">liitä</string>
+    <string name="activity_entry_date">14-Mar-16</string>
+
+    <string name="confirmation_dialog_ok">OK</string>
+    <string name="confirmation_dialog_cancel">Peruuta</string>
+    <string name="confirmation_dialog_delete_vehicle_title">Poista Ajoneuvo</string>
+    <string name="confirmation_dialog_delete_vehicle">Haluatko todella poistaa t�m�n ajoneuvon ?</string>
+
+    <!-- activity_vehicle_list.xml -->
+    <string name="title">Ajoneuvot</string>
 
     <!-- vehicle_list_item.xml -->
     <string name="open_vehicle">Avaa</string>
@@ -69,9 +81,6 @@
     <string name="event_entry_new_event">Uusi tapahtuma</string>
     <string name="event_entry_edit_event">Muokkaa tapahtumaa</string>
 
-    <!-- VehicleInfoActivity.java: AlertDialog -->
-    <string name="vehicle_info_delete_vehicle_title">Poista ajoneuvo</string>
-    <string name="vehicle_info_delete_vehicle_confirmation">Haluatko todella poistaa t�m�n ajoneuvon ?</string>
 
     <string name="privacy_policy_title">Privacy Policy</string>
     <string name="privacy_policy_content">This Privacy Policy describes our policies on the collection, use and disclosure of your information, and describes the choices available to you regarding the use of, your access to, and how to update or delete your personal information. We are committed to good privacy practices regarding personal data entered by you. &#x0a;&#x0a;General Information: Vehicle database application maintain all information entered by user about your vehicles. It will keep track of services, mileages, trips, costs and events.&#x0a;&#x0a;The information we gather: Vehicle database application gather information you give us through forms, any other information will not be collected.&#x0a;&#x0a;How we use the information we gather: Vehicle database application merely operates on the device internal database. No information is ever sent outside your device.&#x0a;&#x0a;Security: The security of your personal data is important to us. When you enter any information on Vehicle database application forms it is stored to user profile related local folder of the application. Other computer user will not see data gathered. When ever user uninstall the vehicle database application, also the data gathered will be deleted automatically."</string>

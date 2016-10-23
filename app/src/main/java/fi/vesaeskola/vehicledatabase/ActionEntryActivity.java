@@ -17,39 +17,38 @@ Copyright (C) 2016 Vesa Eskola.
 --*/
 package fi.vesaeskola.vehicledatabase;
 
-import android.app.DialogFragment;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import android.app.Activity;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
+import java.util.Locale;
 
 import database.DBEngine;
+import utilities.EnginePool;
 
-import static android.support.v4.content.FileProvider.getUriForFile;
 
-
-public class ActionEntryActivity extends AppCompatActivity {
+public class ActionEntryActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "ActionEntryActivity";
-    private static final String AUTHORITY="fi.vesaeskola.vehicledatabase.fileprovider";
 
     protected DBEngine mDatabaseEngine;
     protected int mVehicleId = -1;
@@ -57,8 +56,8 @@ public class ActionEntryActivity extends AppCompatActivity {
     public long mDateLong;
     public EditText mMileage, mExpense, mDescription;
     protected String mCurrentPhotoPath;
+    protected int mAttachmentCount = 0;
 
-    private static final String JPEG_FILE_PREFIX = "IMG_";
 
 
     @Override
@@ -67,7 +66,8 @@ public class ActionEntryActivity extends AppCompatActivity {
 
         // SQLiteOpenHelper based helper to open or create database.
         // Note: Will delete existing data if new database structure is used.
-        mDatabaseEngine = new DBEngine(this);
+        //mDatabaseEngine = new DBEngine(this);
+        mDatabaseEngine = (DBEngine) EnginePool.getEngine("DBEngine");
 
         Bundle bundle = getIntent().getExtras();
 
@@ -91,32 +91,59 @@ public class ActionEntryActivity extends AppCompatActivity {
         mMileage = (EditText) findViewById(R.id.mileage);
         mExpense = (EditText) findViewById(R.id.expense);
         mDescription = (EditText) findViewById(R.id.description);
+
+        TextView textCurrencySymbol = (TextView) findViewById(R.id.currency_unit);
+
+        // TBD: Move following code ito general localization package
+        Currency currency = Currency.getInstance(Locale.getDefault());
+        Log.v("TAG", currency.getSymbol());
+        textCurrencySymbol.setText(currency.getSymbol());
     }
 
-    protected void showDatePickerDialog(View view) {
-
+    public void onPickDate(View view) {
         DatePickerFragment newFragment = new DatePickerFragment();
 
         // User edit existing action, date read from database will be set as initial
         // value for the date picker
         if (mActionId != -1) {
-            newFragment.setDate (mDateLong);
+            newFragment.setDate(mDateLong);
         }
 
         android.app.FragmentManager fragMan = getFragmentManager();
         newFragment.show(fragMan, "datePicker");
     }
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    public void openMenu(View view) {
+        View parent = (View) view.getParent();
+        Log.d(TAG, "openMenu, selected vehicle: " + mVehicleId);
+
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.setOnMenuItemClickListener(ActionEntryActivity.this);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.vehicle_info, popup.getMenu());
+
+        popup.show();
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == Constants.RequestCode.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             // 1: setPic (scale image and set into layout widget)
-            setPic();
+            //setPic();
 
             // 2: galleryAddPic()
             galleryAddPic();
+
+            mAttachmentCount = mAttachmentCount + 1;
+
+            // Change the camera icon
+            ImageView imageView = (ImageView) findViewById(R.id.attachment_icon);
+            imageView.setImageResource(R.drawable.klemmari);
+
+            TextView textAttachmentCout = (TextView) findViewById(R.id.attachment_text);
+            textAttachmentCout.setText(String.valueOf(mAttachmentCount));
 
             mCurrentPhotoPath = null;
         }
@@ -127,12 +154,11 @@ public class ActionEntryActivity extends AppCompatActivity {
         Log.d(TAG, "pickImageWithCamera");
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+        String imageFileName = Constants.JPEG_FILE_PREFIX + timeStamp + "_";
         File f = null;
         try {
-            f = File.createTempFile (imageFileName, ".jpg", getFilesDir());
-        }
-        catch (IOException ex) {
+            f = File.createTempFile(imageFileName, ".jpg", getFilesDir());
+        } catch (IOException ex) {
             Log.d(TAG, "createImageFile caused exception");
             mCurrentPhotoPath = null;
             ex.printStackTrace();
@@ -141,10 +167,10 @@ public class ActionEntryActivity extends AppCompatActivity {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            Uri imageUri = FileProvider.getUriForFile(this, AUTHORITY, f);
+            Uri imageUri = FileProvider.getUriForFile(this, Constants.AUTHORITY , f);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             Log.d(TAG, "pickImageWithCamera. start activity to take photo");
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            startActivityForResult(takePictureIntent, Constants.RequestCode.REQUEST_IMAGE_CAPTURE);
 
             mCurrentPhotoPath = f.getAbsolutePath();
         }
@@ -162,6 +188,7 @@ public class ActionEntryActivity extends AppCompatActivity {
     }
 
     // TBD: if target size is zero do nothing !
+    /*
     private void setPic() {
         // Get the dimensions of the View
         ImageView imageView = (ImageView) findViewById(R.id.actionImageView);
@@ -193,6 +220,32 @@ public class ActionEntryActivity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         imageView.setImageBitmap(bitmap);
         imageView.setVisibility(View.VISIBLE);
+    }
+    */
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuitem_show_privacy_policy: {
+                Log.d(TAG, "Menu item selected: Privacy policy");
+
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.privacy_policy_title)
+                        .setMessage(R.string.privacy_policy_content)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Log.d(TAG, "Vehicle delete selected");
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+                return true;
+            }
+
+            default: {
+                return false;
+            }
+        }
     }
 
 }

@@ -6,7 +6,7 @@ VehicleListItem.java
 
 Abstract:
 
-This class is used to store and populate listview with vehicle basic information (make, model,
+This class is used to store and populate listview with vehicle basic information (vehicleID, make, model,
 regplate, vincode).
 
 Environment:

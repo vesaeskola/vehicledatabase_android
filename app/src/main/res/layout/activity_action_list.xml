@@ -7,21 +7,93 @@
     Copyright (C) 2016 Vesa Eskola.
 -->
 
-<RelativeLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/activity_action_list"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:paddingLeft="@dimen/activity_horizontal_margin"
-android:paddingRight="@dimen/activity_horizontal_margin"
-android:paddingTop="@dimen/activity_vertical_margin"
-android:paddingBottom="@dimen/activity_vertical_margin"
-tools:context="fi.vesaeskola.vehicledatabase.ActionListActivity">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activity_action_list"
+    tools:context="fi.vesaeskola.vehicledatabase.ActionListActivity">
 
-<ListView
-    android:id="@+id/list_actions"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:clickable="true" />
+    <RelativeLayout
+        android:id="@+id/title_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffeb3b"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="4pt">
+
+        <ImageView
+            android:id="@+id/menu_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="4dp"
+            android:elevation="3dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:onClick="OnOpenMenu"
+            android:background="@drawable/menu_icon2" />
+
+        <TextView
+            android:id="@+id/vehicle_make"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/menu_button"
+            android:text="Make"
+            android:textSize="22sp"
+            android:textStyle="normal|bold"
+            android:layout_margin="4dp" />
+
+        <TextView
+            android:id="@+id/vehicle_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/vehicle_make"
+            android:text="Make"
+            android:textSize="14sp"
+            android:layout_margin="4dp" />
+
+        <TextView
+            android:id="@+id/vehicle_regplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/vehicle_model"
+            android:text="Plate"
+            android:textSize="14sp"
+            android:elevation="0dp"
+            android:layout_margin="4dp" />
+
+        <Button
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="4dp"
+            android:elevation="6dp"
+            android:background="@drawable/round_button"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="\u25B6"
+            android:state_enabled="false"
+            android:textColor="#fff"
+            android:textSize="14dp"
+            android:onClick="onEditVehicle"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/content_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_area"
+        android:layout_marginLeft="6pt">
+
+        <ListView
+            android:id="@+id/list_actions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true" />
+    </RelativeLayout>
+
 </RelativeLayout>

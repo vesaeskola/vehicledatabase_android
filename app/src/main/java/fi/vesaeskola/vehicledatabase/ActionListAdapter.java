@@ -30,8 +30,8 @@ import java.util.ArrayList;
 
 public class ActionListAdapter extends ArrayAdapter<ActionListItem> {
     public ActionListAdapter(Context context, ArrayList<ActionListItem> actions) {
-    super(context, 0, actions);
-}
+        super(context, 0, actions);
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

@@ -25,9 +25,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,8 +41,9 @@ import java.util.Locale;
 
 import database.DBEngine;
 import database.VehicleContract;
+import utilities.EnginePool;
 
-public class ActionListActivity extends AppCompatActivity {
+public class ActionListActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "VehicleListActivity";
     private DBEngine mDatabaseEngine;
     private ListView mActionListView;
@@ -56,33 +61,33 @@ public class ActionListActivity extends AppCompatActivity {
 
         // SQLiteOpenHelper based helper to open or create database.
         // Note: Will delete existing data if new database structure is used.
-        mDatabaseEngine = new DBEngine(this);
+        mDatabaseEngine = (DBEngine) EnginePool.getEngine("DBEngine");
 
         mActionListView = (ListView) findViewById(R.id.list_actions);
         mActionListView.setClickable(true);
+
         mActionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-            ActionListItem actionItem = (ActionListItem)mActionListView.getItemAtPosition(position);
-            Intent intent = null;
-            switch (mActionListType)
-            {
-                case Constants.ActionType.ACTION_TYPE_FUELINGS: {
-                    intent = new  Intent(ActionListActivity.this, FuelingEntryActivity.class);
-                    break;
+                ActionListItem actionItem = (ActionListItem) mActionListView.getItemAtPosition(position);
+                Intent intent = null;
+                switch (mActionListType) {
+                    case Constants.RequestCode.REQUEST_NEW_FUELING: {
+                        intent = new Intent(ActionListActivity.this, FuelingEntryActivity.class);
+                        break;
+                    }
+                    case Constants.RequestCode.REQUEST_NEW_SERVICE: {
+                        intent = new Intent(ActionListActivity.this, ServiceEntryActivity.class);
+                        break;
+                    }
+                    case Constants.RequestCode.REQUEST_NEW_EVENT: {
+                        intent = new Intent(ActionListActivity.this, EventEntryActivity.class);
+                        break;
+                    }
                 }
-                case Constants.ActionType.ACTION_TYPE_SERVICES: {
-                    intent = new  Intent(ActionListActivity.this, ServiceEntryActivity.class);
-                    break;
-                }
-                case Constants.ActionType.ACTION_TYPE_EVENTS: {
-                    intent = new  Intent(ActionListActivity.this, EventEntryActivity.class);
-                    break;
-                }
-            }
-            intent.putExtra("action_Id", actionItem.mActionId);
-            startActivityForResult(intent, 1);
-            Log.d(TAG, "open action editor with action ID: " + actionItem.mActionId);
+                intent.putExtra("action_Id", actionItem.mActionId);
+                startActivityForResult(intent, mActionListType);
+                Log.d(TAG, "open action editor with action ID: " + actionItem.mActionId);
             }
         });
 
@@ -93,7 +98,35 @@ public class ActionListActivity extends AppCompatActivity {
         mFuelUnitId = bundle.getInt("fuelUnitId");
         mOdometerUnitId = bundle.getInt("odometerUnitId");
 
-        updateUI();
+        // Update UI and the list view
+        updateUI(Constants.RequestCode.REQUEST_EDIT_VEHICLE);
+    }
+
+    public void OnOpenMenu(View view) {
+        View parent = (View) view.getParent();
+        Log.d(TAG, "onOpenMenu");
+
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.setOnMenuItemClickListener(ActionListActivity.this);
+        MenuInflater inflater = popup.getMenuInflater();
+
+        inflater.inflate(R.menu.menu_01, popup.getMenu());
+
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuitem_show_privacy_policy: {
+                Log.d(TAG, "Menu item selected: Privacy policy");
+                return true;
+            }
+
+            default: {
+                return false;
+            }
+        }
     }
 
     @Override
@@ -103,8 +136,7 @@ public class ActionListActivity extends AppCompatActivity {
         if (mVehicleModified) {
             Log.d(TAG, "onBackPressed: vehicle modified");
             setResult(Activity.RESULT_OK, returnIntent);
-        }
-        else {
+        } else {
             Log.d(TAG, "onBackPressed: vehicle not modified");
             setResult(Activity.RESULT_CANCELED, returnIntent);
         }
@@ -115,38 +147,58 @@ public class ActionListActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
-                Log.d(TAG, "Vechile actions modified, TBD: VehicleListActivity need to refreshed");
-                mVehicleModified = true;
-                updateUI();
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                Log.d(TAG, "Vechile actions not modified");
-            }
+        if (resultCode == Activity.RESULT_OK) {
+            updateUI(requestCode);
         }
+        else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d(TAG, "Vechile actions not modified");
+        }
+
     }//onActivityResult
 
-    private void updateUI() {
-        Log.d(TAG, "updateUI: ActionListType: " +  mActionListType + ", VehicleId: " + mVehicleId);
+    private void updateUI(int requestCode) {
 
-        ArrayList<ActionListItem> actionList = new ArrayList<ActionListItem>();
-        // Open existing database file
+        Log.d(TAG, "updateUI: requestCode: " + requestCode + "ActionListType: " + mActionListType + ", VehicleId: " + mVehicleId);
+
         SQLiteDatabase db = mDatabaseEngine.getReadableDatabase();
 
-        String selectQuery = "SELECT * FROM ";
+        // Vehicle info was edited, update the title only
+        if (requestCode == Constants.RequestCode.REQUEST_EDIT_VEHICLE) {
+            String selectQuery = "SELECT " + VehicleContract.VehicleEntry.COL_MAKE + ", "
+                                           + VehicleContract.VehicleEntry.COL_MODEL + ", "
+                                           + VehicleContract.VehicleEntry.COL_REGPLATE +
+                                 " FROM "  + VehicleContract.VehicleEntry.TABLE +
+                                 " WHERE " + VehicleContract.VehicleEntry._ID + " = " + mVehicleId;
 
-        switch(mActionListType)
-        {
-            case Constants.ActionType.ACTION_TYPE_FUELINGS: {
+            Log.d(TAG, "selectQuery: " + selectQuery);
+            Cursor cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor.moveToNext()) {
+                TextView tvMake = (TextView) findViewById(R.id.vehicle_make);
+                TextView tvModel = (TextView) findViewById(R.id.vehicle_model);
+                TextView tvPlate = (TextView) findViewById(R.id.vehicle_regplate);
+
+                tvMake.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MAKE)));
+                tvModel.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MODEL)));
+                tvPlate.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_REGPLATE)));
+            }
+        }
+
+        // Update entire list view. This must be also done if vehicle has been updated to get units updated
+        ArrayList<ActionListItem> actionList = new ArrayList<ActionListItem>();
+
+        String selectQuery = selectQuery = "SELECT * FROM ";
+
+        switch (mActionListType) {
+            case Constants.RequestCode.REQUEST_NEW_FUELING: {
                 selectQuery = selectQuery + VehicleContract.FuelingEntry.TABLE + " WHERE " + VehicleContract.FuelingEntry.COL_VEHICLEID + " = " + mVehicleId;
                 break;
             }
-            case Constants.ActionType.ACTION_TYPE_SERVICES: {
+            case Constants.RequestCode.REQUEST_NEW_SERVICE: {
                 selectQuery = selectQuery + VehicleContract.ServiceEntry.TABLE + " WHERE " + VehicleContract.ServiceEntry.COL_VEHICLEID + " = " + mVehicleId;
                 break;
             }
-            case Constants.ActionType.ACTION_TYPE_EVENTS: {
+            case Constants.RequestCode.REQUEST_NEW_EVENT: {
                 selectQuery = selectQuery + VehicleContract.EventEntry.TABLE + " WHERE " + VehicleContract.EventEntry.COL_VEHICLEID + " = " + mVehicleId;
                 break;
             }
@@ -160,96 +212,93 @@ public class ActionListActivity extends AppCompatActivity {
 
             String description = "";
 
-            switch(mActionListType)
-            {
-                case Constants.ActionType.ACTION_TYPE_FUELINGS: {
-                    action.mActionId =  cursor.getInt(cursor.getColumnIndex(VehicleContract.FuelingEntry._ID));
+            switch (mActionListType) {
+                case Constants.RequestCode.REQUEST_NEW_FUELING: {
+                    action.mActionId = cursor.getInt(cursor.getColumnIndex(VehicleContract.FuelingEntry._ID));
 
                     if (mOdometerUnitId == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) {
-                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + " " + getResources().getString(R.string.vehicle_entry_detail_short_mail);
+                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + " " + getResources().getString(R.string.vehicle_entry_detail_short_mail);   // TBD: localisation
                     } else {
                         action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + " " + getResources().getString(R.string.vehicle_entry_detail_short_km);
                     }
 
                     Date actionDate = new Date();
                     actionDate.setTime(cursor.getLong(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DATE)));
-                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yyyy");
+                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
                     action.row1_col2 = simpleDataFormat.format(actionDate);
 
-                    String amount = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT));
-                    String expense = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_EXPENSE));
+                    String sAmount = VehileDatabaseApplication.ConvertIntToPlatformString(cursor.getInt(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)));
+
+                    String sExpense = VehileDatabaseApplication.ConvertIntToPlatformString(cursor.getInt(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_EXPENSE)));
 
                     // TBD: Check this: http://stackoverflow.com/questions/12694192/locale-currency-symbol
                     Currency currency = Currency.getInstance(Locale.getDefault());
-                    Log.v("TAG",currency.getSymbol());
+                    Log.v("TAG", currency.getSymbol());
 
                     if (mFuelUnitId == Constants.FuelUnitId.FUEL_UNIT_GALLON) {
-                        action.row2_col1 = amount + " " + getResources().getString(R.string.vehicle_entry_detail_short_gallon) + " (" + expense + currency.getSymbol() + ")";
+                        action.row2_col1 = sAmount + " " + getResources().getString(R.string.vehicle_entry_detail_short_gallon) + " (" + sExpense + currency.getSymbol() + ")";           // TBD: Localization
                     } else {
-                        action.row2_col1 = amount + " " + getResources().getString(R.string.vehicle_entry_detail_short_liter) + " (" + expense + currency.getSymbol() + ")";
+                        action.row2_col1 = sAmount + " " + getResources().getString(R.string.vehicle_entry_detail_short_liter) + " (" + sExpense + currency.getSymbol() + ")";
                     }
-
-
-                    //action.row2_col1 =  amount + " ga (" + expense + "$)" ;
 
                     description = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DESCRIPTION));
                     break;
                 }
-                case Constants.ActionType.ACTION_TYPE_SERVICES: {
-                    action.mActionId =  cursor.getInt(cursor.getColumnIndex(VehicleContract.FuelingEntry._ID));
+                case Constants.RequestCode.REQUEST_NEW_SERVICE: {
+                    action.mActionId = cursor.getInt(cursor.getColumnIndex(VehicleContract.ServiceEntry._ID));
 
                     if (mOdometerUnitId == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) {
-                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + getResources().getString(R.string.vehicle_entry_detail_short_mail);
+                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_MILEAGE)) + getResources().getString(R.string.vehicle_entry_detail_short_mail);  // TBD: Localization
                     } else {
-                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + getResources().getString(R.string.vehicle_entry_detail_short_km);
+                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_MILEAGE)) + getResources().getString(R.string.vehicle_entry_detail_short_km);   // TBD: Localization
                     }
 
                     Date actionDate = new Date();
                     actionDate.setTime(cursor.getLong(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DATE)));
-                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yyyy");
+                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
                     action.row1_col2 = simpleDataFormat.format(actionDate);
 
                     // TBD: Check this: http://stackoverflow.com/questions/12694192/locale-currency-symbol
                     Currency currency = Currency.getInstance(Locale.getDefault());
-                    Log.v("TAG",currency.getSymbol());
+                    Log.v("TAG", currency.getSymbol());
 
-                    action.row2_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_EXPENSE)) + currency.getSymbol() ;
+                    String sExpense = VehileDatabaseApplication.ConvertIntToPlatformString(cursor.getInt(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_EXPENSE)));
+                    action.row2_col1 = sExpense + currency.getSymbol();
                     description = cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DESCRIPTION));
                     break;
                 }
-                case Constants.ActionType.ACTION_TYPE_EVENTS: {
-                    action.mActionId =  cursor.getInt(cursor.getColumnIndex(VehicleContract.FuelingEntry._ID));
+                case Constants.RequestCode.REQUEST_NEW_EVENT: {
+                    action.mActionId = cursor.getInt(cursor.getColumnIndex(VehicleContract.EventEntry._ID));
 
                     if (mOdometerUnitId == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) {
-                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + getResources().getString(R.string.vehicle_entry_detail_short_mail);
+                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_MILEAGE)) + getResources().getString(R.string.vehicle_entry_detail_short_mail);  // TBD: Localization
                     } else {
-                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + getResources().getString(R.string.vehicle_entry_detail_short_km);
+                        action.row1_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_MILEAGE)) + getResources().getString(R.string.vehicle_entry_detail_short_km);  // TBD: Localization
                     }
 
                     Date actionDate = new Date();
                     actionDate.setTime(cursor.getLong(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DATE)));
-                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yyyy");
+                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
                     action.row1_col2 = simpleDataFormat.format(actionDate);
 
                     // TBD: Check this: http://stackoverflow.com/questions/12694192/locale-currency-symbol
                     Currency currency = Currency.getInstance(Locale.getDefault());
-                    Log.v("TAG",currency.getSymbol());
+                    Log.v("TAG", currency.getSymbol());
 
-                    action.row2_col1 = cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_EXPENSE)) + currency.getSymbol();
+                    String sExpense = VehileDatabaseApplication.ConvertIntToPlatformString(cursor.getInt(cursor.getColumnIndex(VehicleContract.EventEntry.COL_EXPENSE)));
+                    action.row2_col1 = sExpense + currency.getSymbol();
 
                     description = cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DESCRIPTION));
                     break;
                 }
             }
 
-            if (description.length() < 1 ) {
+            if (description.length() < 1) {
                 action.row2_col2 = "";
-            }
-            else if (description.length() > 30 ) {
-                String shortDescription = description.substring(0,30);
-                action.row2_col2 = shortDescription +"..";
-            }
-            else {
+            } else if (description.length() > 30) {
+                String shortDescription = description.substring(0, 30);
+                action.row2_col2 = shortDescription + "..";
+            } else {
                 action.row2_col2 = description;
             }
 
@@ -269,6 +318,16 @@ public class ActionListActivity extends AppCompatActivity {
         }
         cursor.close();
         db.close();
+    }
+
+    public void onEditVehicle (View view)
+    {
+        Log.d(TAG,"Edit vehicle");
+        // Open VehicleEntryBasicActivity page
+        Intent intent = new Intent(this, VehicleEntryBasicActivity.class);
+        intent.putExtra("vehicle_Id",mVehicleId);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_EDIT_VEHICLE);
+        Log.d(TAG,"open vehicle editor with vehicle ID: "+ mVehicleId);
     }
 
 }

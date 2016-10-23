@@ -7,53 +7,186 @@
     Copyright (C) 2016 Vesa Eskola.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    android:orientation="vertical">
+    android:id="@+id/activity_vehicle_entry_basic"
+    tools:context="fi.vesaeskola.vehicledatabase.VehicleEntryBasicActivity">
 
-    <TextView
-        android:id="@+id/vehicle_basic_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:text="@string/vehicle_entry_basic_new_vehicle"
-        android:textSize="22sp" />
-
-    <EditText
-        android:id="@+id/vehicle_regplate"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/vehicle_entry_basic_plate" />
-
-    <EditText
-        android:id="@+id/vehicle_make"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/vehicle_entry_basic_make" />
-
-    <EditText
-        android:id="@+id/vehicle_model"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:hint="@string/vehicle_entry_basic_model" />
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
+        android:id="@+id/title_area"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal">
+        android:layout_height="wrap_content"
+        android:background="#ffeb3b"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="4pt">
 
-        <Button
+        <ImageView
+            android:id="@+id/menu_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="4dp"
+            android:elevation="3dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:onClick="openMenu"
+            android:background="@drawable/menu_icon2" />
+
+        <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="OnVehicleEntered"
+            android:layout_toRightOf="@+id/menu_icon"
+            android:text="@string/vehicle_entry_basic_new_vehicle"
+            android:textSize="22sp"
+            android:elevation="0dp"
+            android:layout_margin="4dp"
+            android:layout_centerVertical="true" />
+        <!--
+        <Button
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="4dp"
+            android:elevation="6dp"
+            android:background="@drawable/round_button"
             android:layout_alignParentRight="true"
-            android:text="@string/vehicle_entry_basic_next"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_alignParentBottom="true" />
+            android:gravity="center_vertical|center_horizontal"
+            android:text="\u25B6"
+            android:state_enabled="false"
+            android:textColor="#fff"
+            android:textSize="14dp"
+            android:onClick="onEditVehicle"
+            android:layout_centerVertical="true"/>-->
     </RelativeLayout>
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/content_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_area"
+        android:layout_marginLeft="6pt">
 
+        <!-- Camera to pick attachment image -->
+        <ImageView
+            android:id="@+id/attachment_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/camera_icon2"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="24dp"
+            android:onClick="pickImageWithCamera" />
+
+        <TextView
+            android:id="@+id/attachment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/attachment_icon"
+            android:layout_marginRight="-16dp"
+            android:layout_marginTop="-2dp"
+            android:elevation="6dp"
+            android:text="@string/activity_entry_snap_image"
+            android:textSize="12sp"
+            android:background="#f57f17"
+            android:padding="@dimen/text_padding"
+            android:onClick="pickImageWithCamera" />
+
+        <!-- Plate entry -->
+        <ImageView
+            android:id="@+id/mileage_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/plate_icon"
+            android:layout_below="@+id/date_icon"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/vehicle_regplate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/date_icon"
+            android:layout_toRightOf="@id/mileage_icon"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/vehicle_entry_basic_plate" />
+
+        <!-- Make entry -->
+        <ImageView
+            android:id="@+id/make_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/manufacturer_icon"
+            android:layout_below="@+id/mileage_icon"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/vehicle_make"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mileage_icon"
+            android:layout_toRightOf="@id/make_icon"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/vehicle_entry_basic_make" />
+
+        <!-- Model entry -->
+        <ImageView
+            android:id="@+id/model_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/model_icon"
+            android:layout_below="@+id/make_icon"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/vehicle_model"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/make_icon"
+            android:layout_toRightOf="@id/model_icon"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:hint="@string/vehicle_entry_basic_model" />
+
+        <Button
+            android:id="@+id/next"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
+            android:text="\u25B6"
+            android:state_enabled="false"
+            android:textColor="#fff"
+            android:textSize="28dp"
+            android:onClick="OnVehicleEntered"
+            android:layout_marginTop="100dp"
+            android:layout_below="@+id/model_icon"
+            android:layout_toLeftOf="@+id/attachment_icon"
+            android:layout_toStartOf="@+id/attachment_icon" />
+
+        <TextView
+            android:id="@+id/next_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="6dp"
+            android:text="@string/activity_entry_next"
+            android:textSize="12sp"
+            android:background="#f57f17"
+            android:padding="@dimen/text_padding"
+            android:onClick="OnVehicleEntered"
+            android:layout_alignBottom="@+id/next"
+            android:layout_alignRight="@+id/next"
+            android:layout_alignEnd="@+id/next"
+            android:layout_marginBottom="62dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -23,24 +23,33 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import database.DBEngine;
 import database.VehicleContract;
+import utilities.EnginePool;
 
 import static android.content.ContentValues.TAG;
 
 public class VehicleEntryBasicActivity extends AppCompatActivity {
     private static final String TAG = "VehicleEntryBasicAct.";
     private DBEngine mDatabaseEngine;
-    public EditText mMake, mModel,mRegplate;
+    public EditText mMake, mModel, mRegplate;
+    protected String mCurrentPhotoPath;
     private int mVehicleId;
 
     @Override
@@ -48,7 +57,10 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_entry_basic);
 
-        mDatabaseEngine = new DBEngine(this);
+        //mDatabaseEngine = new DBEngine(this);
+        mDatabaseEngine = (DBEngine) EnginePool.getEngine("DBEngine");
+
+        TextView title = (TextView)findViewById(R.id.title);
 
         // Connect UI widgets to member variables
         mMake = (EditText) findViewById(R.id.vehicle_make);
@@ -58,6 +70,8 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (getIntent().hasExtra("vehicle_Id")) {
             mVehicleId = bundle.getInt("vehicle_Id");
+
+            title.setText(R.string.vehicle_entry_basic_edit_vehicle);
 
             String selectQuery = "SELECT  * FROM " + VehicleContract.VehicleEntry.TABLE + " WHERE " + VehicleContract.VehicleEntry._ID + " = " + mVehicleId;
             Log.d(TAG, "Edit existing vehicle, VehicleId: " + mVehicleId + ", selectQuery: " + selectQuery);
@@ -71,14 +85,49 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
                 mModel.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MODEL)));
                 mRegplate.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_REGPLATE)));
             }
-        }
-        else
-        {
+        } else {
             mVehicleId = -1;
+            title.setText(R.string.vehicle_entry_basic_new_vehicle);
+
             Log.d(TAG, "Create a new vehicle");
         }
     }
 
+    public void pickImageWithCamera(View view) {
+        Log.d(TAG, "pickImageWithCamera");
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = Constants.JPEG_FILE_PREFIX + timeStamp + "_";
+        File f = null;
+        try {
+            f = File.createTempFile(imageFileName, ".jpg", getFilesDir());
+        } catch (IOException ex) {
+            Log.d(TAG, "createImageFile caused exception");
+            mCurrentPhotoPath = null;
+            ex.printStackTrace();
+            return;
+        }
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            Uri imageUri = FileProvider.getUriForFile(this, Constants.AUTHORITY, f);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            Log.d(TAG, "pickImageWithCamera. start activity to take photo");
+            startActivityForResult(takePictureIntent, Constants.RequestCode.REQUEST_IMAGE_CAPTURE);
+
+            mCurrentPhotoPath = f.getAbsolutePath();
+        }
+    }
+
+    // Invoke the system's media scanner to add vehicle database photos to the Media Provider's
+    // database, making it available in the Android Gallery application and to other apps.
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
 
     public void OnVehicleCanceled(View view) {
         Intent returnIntent = new Intent();
@@ -94,17 +143,36 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
             // Open in edit existing mode
             intent.putExtra("vehicle_Id", mVehicleId);
         }
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_NEW_VEHICLE_STEP1);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
 
-                Log.d(TAG, "Vechile detail data entered");
+        if (resultCode == Activity.RESULT_OK) {
 
+            Log.d(TAG, "OnActivityResult: RESULT_OK");
+
+            if (requestCode == Constants.RequestCode.REQUEST_IMAGE_CAPTURE) {
+                // 1: setPic (scale image and set into layout widget)
+                //setPic();
+
+                // 2: galleryAddPic()
+                galleryAddPic();
+
+                //mAttachmentCount = mAttachmentCount + 1;
+
+                // Change the camera icon
+                ImageView imageView = (ImageView) findViewById(R.id.attachment_icon);
+                imageView.setImageResource(R.drawable.klemmari);
+
+                //TextView textAttachmentCout = (TextView) findViewById(R.id.attachment_text);
+                //textAttachmentCout.setText(String.valueOf(mAttachmentCount));
+
+                mCurrentPhotoPath = null;
+            }
+            else if (requestCode == Constants.RequestCode.REQUEST_NEW_VEHICLE_STEP1) {
                 // Open or create database file
                 SQLiteDatabase db = mDatabaseEngine.getWritableDatabase();
 
@@ -134,26 +202,22 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
                             SQLiteDatabase.CONFLICT_REPLACE);
                     db.close();
                     Log.d(TAG, "New vechile entered to database");
-                }
-                else {
-                    db.update(VehicleContract.VehicleEntry.TABLE , values, VehicleContract.VehicleEntry._ID + " = " + mVehicleId, null);
+                } else {
+                    db.update(VehicleContract.VehicleEntry.TABLE, values, VehicleContract.VehicleEntry._ID + " = " + mVehicleId, null);
                     Log.d(TAG, "Existing vehicle updated from database");
                 }
 
-              Intent returnIntent = new Intent();
+                Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
-            else if (resultCode == Activity.RESULT_CANCELED) {
-                Log.d(TAG, "New vechile detail entering cancelled");
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d(TAG, "New vechile detail entering cancelled");
 
-                Intent returnIntent = new Intent();
-                setResult(Activity.RESULT_CANCELED, returnIntent);
-                finish();
-
-            }
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_CANCELED, returnIntent);
+            finish();
         }
     }//onActivityResult
-
 }
 

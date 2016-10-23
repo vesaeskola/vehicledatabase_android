@@ -34,6 +34,7 @@ import android.util.Log;
 
 public class DBEngine extends SQLiteOpenHelper {
     private static final String TAG = "DBEngine";
+
     public DBEngine(Context context) {
         super(context, VehicleContract.DB_NAME, null, VehicleContract.DB_VERSION);
     }
@@ -50,68 +51,69 @@ public class DBEngine extends SQLiteOpenHelper {
             Log.d(TAG, "sqliteVersion: " + sqliteVersion);
         }
 
+
         String createTable = "CREATE TABLE " + VehicleContract.VehicleEntry.TABLE + " ( " +
-                VehicleContract.VehicleEntry._ID                   + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                VehicleContract.VehicleEntry.COL_VINCODE           + " TEXT, " +
-                VehicleContract.VehicleEntry.COL_MAKE              + " TEXT, " +
-                VehicleContract.VehicleEntry.COL_MODEL             + " TEXT, " +
-                VehicleContract.VehicleEntry.COL_YEAR              + " INT, " +
-                VehicleContract.VehicleEntry.COL_REGPLATE          + " TEXT, " +
-                VehicleContract.VehicleEntry.COL_DESCRIPTION       + " TEXT, " +
-                VehicleContract.VehicleEntry.COL_FUEL_UNIT_ID      + " INT, " +
-                VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID  + " INT, " +
-                VehicleContract.VehicleEntry.COL_IMAGEPATH         + " TEXT" +
+                VehicleContract.VehicleEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                VehicleContract.VehicleEntry.COL_VINCODE + " TEXT, " +
+                VehicleContract.VehicleEntry.COL_MAKE + " TEXT, " +
+                VehicleContract.VehicleEntry.COL_MODEL + " TEXT, " +
+                VehicleContract.VehicleEntry.COL_YEAR + " INT, " +
+                VehicleContract.VehicleEntry.COL_REGPLATE + " TEXT, " +
+                VehicleContract.VehicleEntry.COL_DESCRIPTION + " TEXT, " +
+                VehicleContract.VehicleEntry.COL_FUEL_UNIT_ID + " INT, " +
+                VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID + " INT, " +
+                VehicleContract.VehicleEntry.COL_IMAGEPATH + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
         db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.FuelingEntry.TABLE + " ( " +
-                VehicleContract.FuelingEntry._ID                   + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                VehicleContract.FuelingEntry.COL_VEHICLEID         + " TEXT, " +
-                VehicleContract.FuelingEntry.COL_DATE              + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                VehicleContract.FuelingEntry.COL_AMOUNT            + " INT, " +
-                VehicleContract.FuelingEntry.COL_MILEAGE           + " INT, " +
-                VehicleContract.FuelingEntry.COL_FULL              + " INT, " +
-                VehicleContract.FuelingEntry.COL_EXPENSE           + " INT, " +
-                VehicleContract.FuelingEntry.COL_DESCRIPTION       + " TEXT" +
+                VehicleContract.FuelingEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                VehicleContract.FuelingEntry.COL_VEHICLEID + " TEXT, " +
+                VehicleContract.FuelingEntry.COL_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                VehicleContract.FuelingEntry.COL_AMOUNT + " INT, " +
+                VehicleContract.FuelingEntry.COL_MILEAGE + " INT, " +
+                VehicleContract.FuelingEntry.COL_FULL + " INT, " +
+                VehicleContract.FuelingEntry.COL_EXPENSE + " INT, " +
+                VehicleContract.FuelingEntry.COL_DESCRIPTION + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
         db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.EventEntry.TABLE + " ( " +
-                VehicleContract.EventEntry._ID                     + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                VehicleContract.EventEntry.COL_VEHICLEID           + " TEXT, " +
-                VehicleContract.EventEntry.COL_DATE                + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                VehicleContract.EventEntry.COL_EVENTID             + " INT, " +
-                VehicleContract.EventEntry.COL_MILEAGE             + " INT, " +
-                VehicleContract.EventEntry.COL_EXPENSE             + " INT, " +
-                VehicleContract.EventEntry.COL_DESCRIPTION         + " TEXT" +
+                VehicleContract.EventEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                VehicleContract.EventEntry.COL_VEHICLEID + " TEXT, " +
+                VehicleContract.EventEntry.COL_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                VehicleContract.EventEntry.COL_EVENTID + " INT, " +
+                VehicleContract.EventEntry.COL_MILEAGE + " INT, " +
+                VehicleContract.EventEntry.COL_EXPENSE + " INT, " +
+                VehicleContract.EventEntry.COL_DESCRIPTION + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
         db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.ServiceEntry.TABLE + " ( " +
-                VehicleContract.ServiceEntry._ID                   + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                VehicleContract.ServiceEntry.COL_VEHICLEID         + " TEXT, " +
-                VehicleContract.ServiceEntry.COL_DATE              + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                VehicleContract.ServiceEntry.COL_SERVICETYPE       + " INT, " +
-                VehicleContract.ServiceEntry.COL_MILEAGE           + " INT, " +
-                VehicleContract.ServiceEntry.COL_EXPENSE           + " INT, " +
-                VehicleContract.ServiceEntry.COL_DESCRIPTION       + " TEXT" +
+                VehicleContract.ServiceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                VehicleContract.ServiceEntry.COL_VEHICLEID + " TEXT, " +
+                VehicleContract.ServiceEntry.COL_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                VehicleContract.ServiceEntry.COL_SERVICETYPE + " INT, " +
+                VehicleContract.ServiceEntry.COL_MILEAGE + " INT, " +
+                VehicleContract.ServiceEntry.COL_EXPENSE + " INT, " +
+                VehicleContract.ServiceEntry.COL_DESCRIPTION + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
         db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.ServiceTypeEntry.TABLE + " ( " +
-                VehicleContract.ServiceTypeEntry.COL_SERVICETYPE   + " INTEGER PRIMARY KEY NOT NULL, " +
-                VehicleContract.ServiceTypeEntry.COL_DESCRIPTION   + " TEXT" +
+                VehicleContract.ServiceTypeEntry.COL_SERVICETYPE + " INTEGER PRIMARY KEY NOT NULL, " +
+                VehicleContract.ServiceTypeEntry.COL_DESCRIPTION + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
         db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.EventTypeEntry.TABLE + " ( " +
-                VehicleContract.EventTypeEntry.COL_EVENTTYPE       + " INTEGER PRIMARY KEY NOT NULL, " +
-                VehicleContract.EventTypeEntry.COL_DESCRIPTION     + " TEXT" +
+                VehicleContract.EventTypeEntry.COL_EVENTTYPE + " INTEGER PRIMARY KEY NOT NULL, " +
+                VehicleContract.EventTypeEntry.COL_DESCRIPTION + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
 
@@ -138,5 +140,17 @@ public class DBEngine extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + VehicleContract.EventTypeEntry.TABLE);
         onCreate(db);
     }
+
+    public void deleteVehicle (int vehicleID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        db.delete(VehicleContract.VehicleEntry.TABLE, VehicleContract.VehicleEntry._ID + "=?", new String[]{"" + vehicleID});
+
+        // TBD: handle IMAGELINKS table before lost action Id's
+        db.delete(VehicleContract.FuelingEntry.TABLE, VehicleContract.EventEntry.COL_VEHICLEID + "=?", new String[]{"" + vehicleID});
+        db.delete(VehicleContract.EventEntry.TABLE, VehicleContract.FuelingEntry.COL_VEHICLEID + "=?", new String[]{"" + vehicleID});
+        db.delete(VehicleContract.ServiceEntry.TABLE, VehicleContract.ServiceEntry.COL_VEHICLEID + "=?", new String[]{"" + vehicleID});
+    }
+
 
 }

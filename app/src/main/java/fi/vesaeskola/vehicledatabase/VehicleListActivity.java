@@ -20,26 +20,32 @@ Copyright (C) 2016 Vesa Eskola.
 package fi.vesaeskola.vehicledatabase;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.util.ArrayList;
 
 import database.DBEngine;
 import database.VehicleContract;
+import utilities.EnginePool;
 
-public class VehicleListActivity extends AppCompatActivity {
+public class VehicleListActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "VehicleListActivity";
     public static String PACKAGE_NAME;
     private DBEngine mDatabaseEngine;
@@ -68,10 +74,19 @@ public class VehicleListActivity extends AppCompatActivity {
         //TextView tv = (TextView) findViewById(R.id.sample_text);
         //tv.setText(stringFromJNI());
         mVehicleListView = (ListView) findViewById(R.id.list_vehicle);
+        mVehicleListView.setClickable(true);
+
+        mVehicleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+                VehicleListItem vehicle = (VehicleListItem) mVehicleListView.getItemAtPosition(position);
+                Log.d(TAG, "vehicle clicked ID: " + vehicle.mVehicleId);
+            }
+        });
 
         // SQLiteOpenHelper based helper to open or create database.
         // Note: Will delete existing data if new database structure is used.
-        mDatabaseEngine = new DBEngine(this);
+        mDatabaseEngine = (DBEngine)EnginePool.getEngine("DBEngine");
 
         updateUI();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -79,25 +94,85 @@ public class VehicleListActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void OnOpenMenu(View view) {
+        View parent = (View) view.getParent();
+        Log.d(TAG, "onOpenMenu");
+
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.setOnMenuItemClickListener(VehicleListActivity.this);
+        MenuInflater inflater = popup.getMenuInflater();
+
+        if (mVehicleListView.getAdapter().isEmpty() || mVehicleListView.getSelectedItem() == null) {
+            inflater.inflate(R.menu.menu_01, popup.getMenu());
+        }
+        else {
+            inflater.inflate(R.menu.menu_02, popup.getMenu());
+        }
+
+        popup.show();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
+    public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menuitem_add_vehicle:
-                Log.d(TAG, "menu item clicked: Add new Vechile");
+            case R.id.menuitem_edit_vehicle: {
+                Log.d(TAG, "Menu item selected: Edit vehicle");
 
-                // Open VehicleEntryBasicActivity page
-                Intent intent = new Intent(this, VehicleEntryBasicActivity.class);
-                startActivityForResult(intent, 1);
+                VehicleListItem vehicle = (VehicleListItem)mVehicleListView.getSelectedItem();
+                if (vehicle != null) {
+                    // Open VehicleEntryBasicActivity page
+                    Intent intent = new Intent(this, VehicleEntryBasicActivity.class);
+
+                    intent.putExtra("vehicle_Id", vehicle.mVehicleId);
+                    startActivityForResult(intent, Constants.RequestCode.REQUEST_EDIT_VEHICLE);
+
+                    Log.d(TAG, "open vehicle editor with vehicle ID: " + vehicle.mVehicleId);
+                }
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            }
+            case R.id.menuitem_delete_vehicle: {
+                Log.d(TAG, "Menu item selected: Delete vehicle");
+
+                VehicleListItem vehicle = (VehicleListItem)mVehicleListView.getSelectedItem();
+                if (vehicle != null) {
+                mDatabaseEngine.deleteVehicle (vehicle.mVehicleId);
+                }
+                /*
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.vehicle_info_delete_vehicle_title)
+                        .setMessage(R.string.vehicle_info_delete_vehicle_confirmation)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Log.d(TAG, "Vehicle delete selected");
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+                */
+                return true;
+            }
+            case R.id.menuitem_show_privacy_policy: {
+                Log.d(TAG, "Menu item selected: Privacy policy");
+                /*
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.privacy_policy_title)
+                        .setMessage(R.string.privacy_policy_content)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Log.d(TAG, "Vehicle delete selected");
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+                        */
+                return true;
+            }
+
+            default: {
+                return false;
+            }
         }
     }
 
@@ -105,17 +180,15 @@ public class VehicleListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 updateUI();
-            }
-            else if (resultCode == Activity.RESULT_CANCELED) {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 Log.d(TAG, "New vechile entering cancelled");
             }
         }
     }//onActivityResult
 
     private void updateUI() {
-        Log.d(TAG, "updateUI: Select * from VEHICLES table");
         ArrayList<VehicleListItem> vehicleList = new ArrayList<VehicleListItem>();
         // Open existing database file
         SQLiteDatabase db = mDatabaseEngine.getReadableDatabase();
@@ -127,15 +200,30 @@ public class VehicleListActivity extends AppCompatActivity {
         while (cursor.moveToNext()) {
             int vehicleID = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry._ID));
             VehicleListItem vehicle = new VehicleListItem(vehicleID,
-                cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MAKE)),
-                cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MODEL)),
-                cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_REGPLATE)),
-                cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_VINCODE))
-                );
+                    cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MAKE)),
+                    cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MODEL)),
+                    cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_REGPLATE)),
+                    cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_VINCODE))
+            );
 
             vehicleList.add(vehicle);
             Log.d(TAG, "Vehicle read from database: " + vehicle.mVehicleId + " " + vehicle.make + "  " + vehicle.model + "  " + vehicle.regplate + "  " + vehicle.vincode);
         }
+
+        TextView tvWellcomeMessage = (TextView) findViewById(R.id.add_vehicle_tip_text);
+        ImageView ivWellcomeMessage = (ImageView) findViewById(R.id.add_vehicle_tip);
+
+        if (vehicleList.isEmpty())
+        {
+            tvWellcomeMessage.setVisibility(View.VISIBLE);
+            ivWellcomeMessage.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            tvWellcomeMessage.setVisibility(View.GONE);
+            ivWellcomeMessage.setVisibility(View.GONE);
+        }
+
 
         if (mVehicleListView != null) {
             if (mVehicleAdapter == null) {
@@ -151,19 +239,25 @@ public class VehicleListActivity extends AppCompatActivity {
         db.close();
     }
 
-
     public void openVehicle(View view) {
         View parent = (View) view.getParent();
         Button vehicleOpenBtn = (Button) parent.findViewById(R.id.vehicle_open);
-        Log.d(TAG, "Selected vehicle: " + vehicleOpenBtn.getId() + " " + vehicleOpenBtn.getTag() );
+        Log.d(TAG, "Selected vehicle: " + vehicleOpenBtn.getId() + " " + vehicleOpenBtn.getTag());
 
         // Open VehicleEntryBasicActivity page
         Intent intent = new Intent(this, VehicleInfoActivity.class);
-        intent.putExtra("vehicle_Id", (int)vehicleOpenBtn.getTag());
+        intent.putExtra("vehicle_Id", (int) vehicleOpenBtn.getTag());
         startActivityForResult(intent, 1);
     }
 
 
+    public void onNewVehicle (View view) {
+        Log.d(TAG, "onNewVehicle");
+
+        // Open VehicleEntryBasicActivity page
+        Intent intent = new Intent(this, VehicleEntryBasicActivity.class);
+        startActivityForResult(intent, 1);
+    }
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.

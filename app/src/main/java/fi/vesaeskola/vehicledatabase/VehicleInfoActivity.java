@@ -20,6 +20,7 @@ package fi.vesaeskola.vehicledatabase;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -32,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
@@ -40,6 +42,7 @@ import java.util.Date;
 
 import database.DBEngine;
 import database.VehicleContract;
+import utilities.EnginePool;
 
 public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItemClickListener {
     private static final String TAG = "VehicleInfoActivity";
@@ -59,37 +62,101 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
         // SQLiteOpenHelper based helper to open or create database.
         // Note: Will delete existing data if new database structure is used.
-        mDatabaseEngine = new DBEngine(this);
+        mDatabaseEngine = (DBEngine) EnginePool.getEngine("DBEngine");
 
-        updateUI (Constants.ActionType.ACTION_TYPE_VEHICLE);
-        updateUI (Constants.ActionType.ACTION_TYPE_FUELINGS);
-        updateUI (Constants.ActionType.ACTION_TYPE_SERVICES);
-        updateUI (Constants.ActionType.ACTION_TYPE_EVENTS);
+        updateUI(Constants.RequestCode.REQUEST_EDIT_VEHICLE);
+        updateUI(Constants.RequestCode.REQUEST_NEW_FUELING);
+        updateUI(Constants.RequestCode.REQUEST_NEW_SERVICE);
+        updateUI(Constants.RequestCode.REQUEST_NEW_EVENT);
     }
 
-    private void updateUI (int requestCode) {
+    private void updateUI(int requestCode) {
 
         switch (requestCode) {
-            case Constants.ActionType.ACTION_TYPE_FUELINGS: {
+            case Constants.RequestCode.REQUEST_NEW_FUELING: {
                 readLastFuelingInfoRow();
                 break;
             }
-            case Constants.ActionType.ACTION_TYPE_SERVICES: {
+            case Constants.RequestCode.REQUEST_NEW_SERVICE: {
                 readLastServiceInfoRow();
                 break;
             }
-            case Constants.ActionType.ACTION_TYPE_EVENTS: {
+            case Constants.RequestCode.REQUEST_NEW_EVENT: {
                 readLastEventInfoRow();
                 break;
             }
-            case Constants.ActionType.ACTION_TYPE_VEHICLE: {
+            case Constants.RequestCode.REQUEST_EDIT_VEHICLE: {
+                // Need to update everything, units could be changed
                 readVehicleInfo();
+                readLastFuelingInfoRow();
+                readLastServiceInfoRow();
+                readLastEventInfoRow();
                 break;
             }
         }
     }
 
-    private void readVehicleInfo () {
+    public void OnOpenMenu(View view) {
+        View parent = (View) view.getParent();
+        Log.d(TAG, "onOpenMenu, selected vehicle: " + mVehicleId);
+        Button menuBtn = (Button) findViewById(R.id.menu_button);
+
+        PopupMenu popup = new PopupMenu(VehicleInfoActivity.this, menuBtn);
+        popup.getMenuInflater().inflate(R.menu.vehicle_info, popup.getMenu());
+        popup.setOnMenuItemClickListener(VehicleInfoActivity.this);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuitem_edit_vehicle: {
+                Log.d(TAG, "Menu item selected: Edit vehicle");
+
+                // Open VehicleEntryBasicActivity page
+                Intent intent = new Intent(this, VehicleEntryBasicActivity.class);
+
+                intent.putExtra("vehicle_Id", mVehicleId);
+                startActivityForResult(intent, Constants.RequestCode.REQUEST_EDIT_VEHICLE);
+
+                Log.d(TAG, "open vehicle editor with vehicle ID: " + mVehicleId);
+
+                return true;
+            }
+            case R.id.menuitem_delete_vehicle: {
+                Log.d(TAG, "Menu item selected: Delete vehicle");
+
+                mDatabaseEngine.deleteVehicle (mVehicleId);
+
+                // Back to vehicle list view
+                Intent retIntent = new Intent();
+                retIntent.putExtra("update_needed", true);
+                setResult(Activity.RESULT_OK, retIntent);
+                finish();
+
+                /* For some reason this will crash at least the emulator */
+                // TBD: Check there is used correct context for the AlertDialog creation
+                /*
+                FragmentManager fm = getFragmentManager();
+                ConfirmationDialogFragment dialog = new ConfirmationDialogFragment();
+                String title = getResources().getString(R.string.confirmation_dialog_delete_vehicle_title);
+                dialog.show(fm, title);
+                */
+
+                return true;
+            }
+            case R.id.menuitem_show_privacy_policy: {
+                Log.d(TAG, "Menu item selected: Privacy policy");
+                return true;
+            }
+            default: {
+                return true;
+            }
+        }
+    }
+
+    // Read and update UI
+    private void readVehicleInfo() {
         if (mDatabaseEngine == null) {
             Log.d(TAG, "readVehicleInfo: mDatabaseEngine==null");
             return;
@@ -116,24 +183,18 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
             mFuelUnitId = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_FUEL_UNIT_ID));
             mOdometerUnitId = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID));
 
-            if (description.length() < 1 ) {
+            if (description.length() < 1) {
                 tvDescription.setText("");
-            }
-            else if (description.length() > 32 ) {
-                String shortDescription = description.substring(0,32);
+            } else if (description.length() > 64) {
+                String shortDescription = description.substring(0, 64);
                 tvDescription.setText(shortDescription + "..");
-            }
-            else
-            {
+            } else {
                 tvDescription.setText(description);
             }
-            mFuelUnitId = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_FUEL_UNIT_ID));
-            mOdometerUnitId = cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID));
         }
     }
 
-    private void readLastFuelingInfoRow()
-    {
+    private void readLastFuelingInfoRow() {
         if (mDatabaseEngine == null) {
             Log.d(TAG, "readVehicleInfo: mDatabaseEngine==null");
             return;
@@ -157,7 +218,7 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
             btnFuelingMore.setEnabled(true);
 
             // Refueling, column 1
-            tvFuelingCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE))  + " ");
+            tvFuelingCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + " ");
             if (mOdometerUnitId == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) {
                 tvFuelingCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_mail));
             } else {
@@ -166,52 +227,39 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
             // Refueling, column 2
             long fuelingDate = cursor.getLong(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DATE));
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yyyy");
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
             Date now = new Date();
             now.setTime(fuelingDate);
             tvFuelingCol2.setText(simpleDataFormat.format(now));
-            /*
-            tvFuelingCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)));
-            if (mFuelUnitId == Constants.FuelUnitId.FUEL_UNIT_GALLON) {
-                tvFuelingCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_gallon));
-            } else {
-                tvFuelingCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_liter));
-            }
-            */
 
             // Refueling, row 2
             String description = cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DESCRIPTION));
-            tvFuelingRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)) + " ");
+
+            String sAmount = VehileDatabaseApplication.ConvertIntToPlatformString(cursor.getInt(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)));
+            tvFuelingRow2.setText(sAmount + " ");
+
             if (mFuelUnitId == Constants.FuelUnitId.FUEL_UNIT_GALLON) {
                 tvFuelingRow2.append(getResources().getString(R.string.vehicle_entry_detail_short_gallon));
             } else {
                 tvFuelingRow2.append(getResources().getString(R.string.vehicle_entry_detail_short_liter));
             }
 
-            if (description.length() < 1 ) {
+            if (description.length() < 1) {
                 ;
-            }
-            else if (description.length() > 32 ) {
-                String shortDescription = description.substring(0,32);
-                //tvFuelingRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)) + " ga. " + shortDescription + "..");
+            } else if (description.length() > 32) {
+                String shortDescription = description.substring(0, 32);
                 tvFuelingRow2.append(" " + shortDescription + "..");
-            }
-            else
-            {
-                //tvFuelingRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)) + " ga. " + description);
+            } else {
                 tvFuelingRow2.append(" " + description);
             }
-        }
-        else
-        {
+        } else {
             tvFuelingCol1.setText(R.string.vehicle_info_no_fuelings);
             tvFuelingCol2.setText("");
             tvFuelingRow2.setText("");
         }
     }
 
-    private void readLastServiceInfoRow()
-    {
+    private void readLastServiceInfoRow() {
         if (mDatabaseEngine == null) {
             Log.d(TAG, "readVehicleInfo: mDatabaseEngine==null");
             return;
@@ -244,7 +292,7 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
             // Service, column 2
             long serviceDate = cursor.getLong(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DATE));
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yyyy");
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
             Date now = new Date();
             now.setTime(serviceDate);
             tvServiceCol2.setText(simpleDataFormat.format(now));
@@ -252,31 +300,25 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
             // Service, row 2
             // TBD: Handle currency unit ($, £ €) somehow
             String description = cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DESCRIPTION));
-            if (description.length() < 1 ) {
+            if (description.length() < 1) {
                 ;//tvServiceRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_EXPENSE)) + " $");
-            }
-            else if (description.length() > 34 ) {
-                String shortDescription = description.substring(0,34);
+            } else if (description.length() > 34) {
+                String shortDescription = description.substring(0, 34);
                 //tvServiceRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_PRISE)) + " $ @" + shortDescription);
                 tvServiceRow2.setText(shortDescription + "..");
 
-            }
-            else
-            {
+            } else {
                 //tvServiceRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_PRISE)) + " $ @" + description);
                 tvServiceRow2.setText(description);
             }
-        }
-        else
-        {
+        } else {
             tvServiceCol1.setText(R.string.vehicle_info_no_services);
             tvServiceCol2.setText("");
             tvServiceRow2.setText("");
         }
     }
 
-    private void readLastEventInfoRow()
-    {
+    private void readLastEventInfoRow() {
         if (mDatabaseEngine == null) {
             Log.d(TAG, "readVehicleInfo: mDatabaseEngine==null");
             return;
@@ -309,31 +351,26 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
             // Event, column 2
             long eventDate = cursor.getLong(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DATE));
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yyyy");
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
             Date now = new Date();
             now.setTime(eventDate);
             tvEventCol2.setText(simpleDataFormat.format(now));
 
             // Event, row 2
             String description = cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DESCRIPTION));
-            if (description.length() < 1 ) {
+            if (description.length() < 1) {
                 ;//tvEventRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_PRISE)) + " $");
-            }
-            else if (description.length() > 32 ) {
-                String shortDescription = description.substring(0,32);
+            } else if (description.length() > 32) {
+                String shortDescription = description.substring(0, 32);
                 //tvEventRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_PRISE)) + " $ @" + shortDescription);
                 tvEventRow2.setText(shortDescription + "..");
-            }
-            else
-            {
+            } else {
                 //tvEventRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_PRISE)) + " $ @" + description);
                 tvEventRow2.setText(description);
 
             }
-        }
-        else
-        {
-            tvEventCol1.setText(R.string.vehicle_info_no_events );
+        } else {
+            tvEventCol1.setText(R.string.vehicle_info_no_events);
             tvEventCol2.setText("");
             tvEventRow2.setText("");
         }
@@ -347,7 +384,7 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         //
         Intent intent = new Intent(this, FuelingEntryActivity.class);
         intent.putExtra("vehicle_Id", mVehicleId);
-        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_FUELINGS);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_NEW_FUELING);
     }
 
     public void onNewService(View view) {
@@ -358,7 +395,7 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         //
         Intent intent = new Intent(this, ServiceEntryActivity.class);
         intent.putExtra("vehicle_Id", mVehicleId);
-        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_SERVICES );
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_NEW_SERVICE);
     }
 
     public void onNewEvent(View view) {
@@ -369,21 +406,10 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         //
         Intent intent = new Intent(this, EventEntryActivity.class);
         intent.putExtra("vehicle_Id", mVehicleId);
-        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_EVENTS);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_NEW_EVENT);
 
     }
 
-    public void openMenu(View view) {
-        View parent = (View) view.getParent();
-        Log.d(TAG, "openMenu, selected vehicle: " + mVehicleId);
-
-        PopupMenu popup = new PopupMenu(this, view);
-        popup.setOnMenuItemClickListener(VehicleInfoActivity.this);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.vehicle_info, popup.getMenu());
-
-        popup.show();
-    }
 
     public void openEventList(View view) {
         View parent = (View) view.getParent();
@@ -393,10 +419,10 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         //
         Intent intent = new Intent(this, ActionListActivity.class);
         intent.putExtra("vehicle_Id", mVehicleId);
-        intent.putExtra("listType", Constants.ActionType.ACTION_TYPE_EVENTS);
+        intent.putExtra("listType", Constants.RequestCode.REQUEST_NEW_EVENT);
         intent.putExtra("fuelUnitId", mFuelUnitId);
         intent.putExtra("odometerUnitId", mOdometerUnitId);
-        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_EVENTS);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_NEW_EVENT);
     }
 
     public void openServiceList(View view) {
@@ -407,8 +433,8 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         //
         Intent intent = new Intent(this, ActionListActivity.class);
         intent.putExtra("vehicle_Id", mVehicleId);
-        intent.putExtra("listType", Constants.ActionType.ACTION_TYPE_SERVICES);
-        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_SERVICES);
+        intent.putExtra("listType", Constants.RequestCode.REQUEST_NEW_SERVICE);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_NEW_SERVICE);
     }
 
     public void openFuelingList(View view) {
@@ -419,75 +445,30 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
         //
         Intent intent = new Intent(this, ActionListActivity.class);
         intent.putExtra("vehicle_Id", mVehicleId);
-        intent.putExtra("listType", Constants.ActionType.ACTION_TYPE_FUELINGS);
-        startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_FUELINGS);
+        intent.putExtra("listType", Constants.RequestCode.REQUEST_NEW_FUELING);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_NEW_FUELING);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (resultCode == Activity.RESULT_CANCELED) {
-            Log.d(TAG, "Activity result: RESULT_CANCELED");
-        }
-        else if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             Log.d(TAG, "Activity result: RESULT_OK");
-            updateUI (requestCode);
+            updateUI(requestCode);
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d(TAG, "Activity result: RESULT_CANCELED");
         }
 
     }//onActivityResult
 
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId())
-        {
-            case R.id.menuitem_edit_vehicle: {
-                Log.d(TAG, "Menu item selected: Edit vehicle");
-
-                // Open VehicleEntryBasicActivity page
-                Intent intent = new  Intent(this, VehicleEntryBasicActivity.class);
-
-                intent.putExtra("vehicle_Id", mVehicleId);
-                startActivityForResult(intent, Constants.ActionType.ACTION_TYPE_VEHICLE);
-
-                Log.d(TAG, "open vehicle editor with vehicle ID: " + mVehicleId);
-
-                return true;
-            }
-            case R.id.menuitem_delete_vehicle: {
-                Log.d(TAG, "Menu item selected: Delete vehicle");
-
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.vehicle_info_delete_vehicle_title)
-                        .setMessage(R.string.vehicle_info_delete_vehicle_confirmation)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Log.d(TAG, "Vehicle delete selected");
-                            }})
-                        .setNegativeButton(android.R.string.no, null).show();
-
-                return true;
-            }
-            case R.id.menuitem_show_privacy_policy: {
-                Log.d(TAG, "Menu item selected: Privacy policy");
-
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.privacy_policy_title)
-                        .setMessage(R.string.privacy_policy_content)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Log.d(TAG, "Vehicle delete selected");
-                            }})
-                        .setNegativeButton(android.R.string.no, null).show();
-                return true;
-            }
-
-            default: {
-                return false;
-            }
-        }
+    public void onEditVehicle (View view)
+    {
+        Log.d(TAG,"Edit vehicle");
+        // Open VehicleEntryBasicActivity page
+        Intent intent = new Intent(this, VehicleEntryBasicActivity.class);
+        intent.putExtra("vehicle_Id",mVehicleId);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_EDIT_VEHICLE);
+        Log.d(TAG,"open vehicle editor with vehicle ID: "+mVehicleId);
     }
+
 }

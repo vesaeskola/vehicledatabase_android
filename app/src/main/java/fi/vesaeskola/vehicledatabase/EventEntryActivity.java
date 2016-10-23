@@ -26,8 +26,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,16 +42,19 @@ public class EventEntryActivity extends ActionEntryActivity {
         setContentView(R.layout.activity_event_entry);
         super.onCreate(savedInstanceState);
 
-        // Convert long mDateLong of super class to human readable format into button label
-        Button btnDate = (Button) findViewById(R.id.btn_pick_date);
+        TextView title = (TextView)findViewById(R.id.title);
+        TextView textDate = (TextView) findViewById(R.id.date_text);
 
         if (mVehicleId != -1) {
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yyyy");
+            title.setText(R.string.event_entry_new_event);
+
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
             Date now = new Date();
             now.setTime(mDateLong);
-            btnDate.setText(simpleDataFormat.format(now));
-        }
-        else if (mActionId != -1) {
+            textDate.setText(simpleDataFormat.format(now));
+        } else if (mActionId != -1) {
+            title.setText(R.string.event_entry_edit_event);
+
             String selectQuery = "SELECT  * FROM " + VehicleContract.EventEntry.TABLE + " WHERE " + VehicleContract.EventEntry._ID + " = " + mActionId;
             Log.d(TAG, "edit existing action: selectQuery: " + selectQuery);
 
@@ -61,15 +63,16 @@ public class EventEntryActivity extends ActionEntryActivity {
             Cursor cursor = db.rawQuery(selectQuery, null);
 
             if (cursor.moveToNext()) {
-                //mAmount.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_EVENTID)));
-                mExpense.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_EXPENSE)));
-                mMileage.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_MILEAGE)));
+                String sExpense = VehileDatabaseApplication.ConvertIntToPlatformString(cursor.getInt(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_EXPENSE)));
+                mExpense.setText(sExpense);
+                int iMileage = cursor.getInt(cursor.getColumnIndex(VehicleContract.EventEntry.COL_MILEAGE));
+                mMileage.setText(String.valueOf(iMileage));
                 mDescription.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DESCRIPTION)));
                 mDateLong = cursor.getLong(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DATE));
-                SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yyyy");
+                SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
                 Date now = new Date();
                 now.setTime(mDateLong);
-                btnDate.setText(simpleDataFormat.format(now));
+                textDate.setText(simpleDataFormat.format(now));
             }
         }
     }
@@ -85,8 +88,10 @@ public class EventEntryActivity extends ActionEntryActivity {
         if (mVehicleId != -1) {
             values.put(VehicleContract.EventEntry.COL_VEHICLEID, mVehicleId);
             values.put(VehicleContract.EventEntry.COL_DATE, mDateLong);
-            values.put(VehicleContract.EventEntry.COL_MILEAGE, mMileage.getText().toString());
-            values.put(VehicleContract.EventEntry.COL_EXPENSE, mExpense.getText().toString());
+            int iMileage = VehileDatabaseApplication.ConvertStringToIntNoRound(mMileage.getText().toString());
+            values.put(VehicleContract.EventEntry.COL_MILEAGE, iMileage);
+            int expense = VehileDatabaseApplication.ConvertStringToInt(mExpense.getText().toString());
+            values.put(VehicleContract.EventEntry.COL_EXPENSE, expense);
             values.put(VehicleContract.EventEntry.COL_DESCRIPTION, mDescription.getText().toString());
 
             db.insertWithOnConflict(VehicleContract.EventEntry.TABLE,
@@ -96,15 +101,15 @@ public class EventEntryActivity extends ActionEntryActivity {
             db.close();
 
             Log.d(TAG, "New event entered to database");
-        }
-        else if (mActionId != -1)
-        {
+        } else if (mActionId != -1) {
             values.put(VehicleContract.EventEntry.COL_DATE, mDateLong);
-            values.put(VehicleContract.EventEntry.COL_MILEAGE, mMileage.getText().toString());
-            values.put(VehicleContract.EventEntry.COL_EXPENSE, mExpense.getText().toString());
+            int iMileage = VehileDatabaseApplication.ConvertStringToIntNoRound(mMileage.getText().toString());
+            values.put(VehicleContract.EventEntry.COL_MILEAGE, iMileage);
+            int expense = VehileDatabaseApplication.ConvertStringToInt(mExpense.getText().toString());
+            values.put(VehicleContract.EventEntry.COL_EXPENSE, expense);
             values.put(VehicleContract.EventEntry.COL_DESCRIPTION, mDescription.getText().toString());
 
-            db.update(VehicleContract.EventEntry.TABLE , values, VehicleContract.EventEntry._ID + " = " + mActionId, null);
+            db.update(VehicleContract.EventEntry.TABLE, values, VehicleContract.EventEntry._ID + " = " + mActionId, null);
             Log.d(TAG, "Existing event updated from database");
         }
 

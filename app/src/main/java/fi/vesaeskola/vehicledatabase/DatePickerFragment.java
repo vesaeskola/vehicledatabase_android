@@ -23,6 +23,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,7 +31,7 @@ import java.util.Date;
 
 
 public class DatePickerFragment extends DialogFragment
-    implements DatePickerDialog.OnDateSetListener {
+        implements DatePickerDialog.OnDateSetListener {
     public int mYear = -1, mMonth = -1, mDay = -1;
 
     @Override
@@ -54,24 +55,23 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-    // Do something with the date chosen by the user
-        Button btnDate = (Button)getActivity().findViewById(R.id.btn_pick_date);
+        TextView textDate = (TextView) getActivity().findViewById(R.id.date_text);
 
 
         final Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
 
         // Set entered date into button label
-        SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yyyy");
+        SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
         String strDate = simpleDataFormat.format(calendar.getTime());
-        btnDate.setText(strDate);
+        textDate.setText(strDate);
 
         // Store entered date into member variable of caller activity
-        ActionEntryActivity parentActivity = (ActionEntryActivity)getActivity();
+        ActionEntryActivity parentActivity = (ActionEntryActivity) getActivity();
         parentActivity.mDateLong = calendar.getTime().getTime();
     }
 
-    public void setDate (long longDate) {
+    public void setDate(long longDate) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date(longDate));
         mYear = cal.get(Calendar.YEAR);

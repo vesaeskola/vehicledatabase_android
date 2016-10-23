@@ -9,262 +9,324 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginLeft="8dp" >
+    android:id="@+id/activity_vehicle_info"
+    tools:context="fi.vesaeskola.vehicledatabase.VehicleInfoActivity">
 
-    <Button
-        android:id="@+id/btn_menu"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/title_area"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/layout1"
-        android:onClick="openMenu"
-        android:text="@string/vehicle_info_menu"
-        android:layout_marginRight="8dp" />
+        android:elevation="3dp"
+        android:background="#ffeb3b"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+
+        <Button
+            android:id="@+id/menu_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="6dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/menu_icon2"
+            android:onClick="OnOpenMenu" />
 
         <TextView
             android:id="@+id/vehicle_make"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:textStyle="normal|bold"
+            android:layout_toRightOf="@+id/menu_button"
             android:text="Make"
-            android:textSize="22sp" />
+            android:textSize="22sp"
+            android:textStyle="normal|bold"
+            android:layout_margin="4dp" />
 
         <TextView
             android:id="@+id/vehicle_model"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="4dp"
-            android:text="Model"
-            android:textSize="18sp" />
+            android:layout_toRightOf="@+id/vehicle_make"
+            android:text="Make"
+            android:textSize="14sp"
+            android:layout_margin="4dp" />
 
         <TextView
             android:id="@+id/vehicle_regplate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="4dp"
+            android:layout_toRightOf="@+id/vehicle_model"
             android:text="Plate"
-            android:textSize="18sp" />
+            android:textSize="14sp"
+            android:elevation="0dp"
+            android:layout_margin="4dp" />
 
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout2"
-        android:layout_below="@id/layout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+        <Button
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_margin="4dp"
+            android:elevation="6dp"
+            android:background="@drawable/round_button"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="\u25B6"
+            android:state_enabled="false"
+            android:textColor="#fff"
+            android:textSize="18dp"
+            android:onClick="onEditVehicle"
+            android:layout_centerVertical="true"/>
 
         <TextView
             android:id="@+id/vehicle_vincode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_below="@+id/vehicle_make"
+            android:layout_marginLeft="8dp"
             android:layout_marginBottom="4dp"
             android:text="Vincode"
             android:textSize="14sp" />
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout3"
-        android:layout_below="@id/layout2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_centerHorizontal="false"
-        android:layout_centerVertical="false">
 
         <TextView
             android:id="@+id/vehicle_description"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="4dp"
+            android:layout_below="@+id/vehicle_vincode"
             android:text="Description"
-            android:textSize="14sp"
-            />
-    </LinearLayout>
+            android:layout_marginLeft="8dp" />
+    </RelativeLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout4"
-        android:layout_below="@id/layout3"
-        android:layout_marginTop="30dp"
+
+    <RelativeLayout
+        android:id="@+id/content_area"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_area"
+        android:elevation="0dp"
+        android:layout_marginLeft="6pt">
 
-        <Button
-            android:id="@+id/btn_refueling"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+
+        <ImageView
+            android:id="@+id/refueling_icon"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_margin="4dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:onClick="onNewFueling"
-            android:text="@string/vehicle_info_fueling"
-            android:layout_marginRight="8dp" />
+            android:background="@drawable/refueling_icon" />
 
         <Button
-            android:id="@+id/btn_service"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="4dp"
+            android:layout_alignBottom="@id/refueling_icon"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
+            android:text="\u002B"
+            android:textColor="#fff"
+            android:textSize="20dp"
+            android:onClick="onNewFueling" />
+
+        <ImageView
+            android:id="@+id/service_icon"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_centerHorizontal="true"
             android:onClick="onNewService"
-            android:text="@string/vehicle_info_service"
-            android:layout_marginRight="8dp" />
+            android:background="@drawable/service_icon" />
 
         <Button
-            android:id="@+id/btn_event"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="4dp"
+            android:layout_alignBottom="@id/service_icon"
+            android:layout_centerHorizontal="true"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
+            android:text="\u002B"
+            android:textColor="#fff"
+            android:textSize="20dp"
+            android:onClick="onNewService" />
+
+
+        <ImageView
+            android:id="@+id/camera_icon2"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_alignParentRight="true"
+            android:onClick="onNewEvent"
+            android:background="@drawable/camera_icon2" />
+
+        <Button
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="4dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@id/camera_icon2"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
+            android:text="\u002B"
+            android:textColor="#fff"
+            android:textSize="20dp"
+            android:onClick="onNewEvent" />
+
+        <TextView
+            android:id="@+id/vehicle_recent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onNewEvent"
-            android:text="@string/vehicle_info_event"
-            android:layout_marginRight="8dp" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/refueling_icon"
+            android:text="@string/vehicle_info_recent"
+            android:textSize="22sp" />
 
-    </LinearLayout>
+        <!-- Recent Event begin -->
+        <TextView
+            android:id="@+id/recent_event_col1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event_Col1"
+            android:textSize="14sp"
+            android:layout_below="@+id/vehicle_recent"
+            android:layout_marginLeft="8dp" />
 
-    <TextView
-        android:id="@+id/vehicle_recent"
-        android:layout_below="@id/layout4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/vehicle_info_recent"
-        android:textSize="22sp" />
+        <TextView
+            android:id="@+id/recent_event_col2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event_Col2"
+            android:textSize="14sp"
+            android:layout_below="@+id/vehicle_recent"
+            android:layout_toLeftOf="@+id/btn_events_more"
+            android:layout_marginLeft="8dp" />
 
-    <!-- Recent Event begin -->
-    <TextView
-        android:id="@+id/recent_event_col1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event_Col1"
-        android:textSize="14sp"
-        android:layout_below="@+id/vehicle_recent"
-        android:layout_marginLeft="8dp" />
+        <TextView
+            android:id="@+id/recent_event_row2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event_Row2"
+            android:textSize="14sp"
+            android:layout_below="@+id/recent_event_col1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="20dp" />
 
-    <TextView
-        android:id="@+id/recent_event_col2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event_Col2"
-        android:textSize="14sp"
-        android:layout_below="@+id/vehicle_recent"
-        android:layout_toLeftOf="@+id/btn_events_more"
-        android:layout_marginLeft="8dp" />
+        <Button
+            android:id="@+id/btn_events_more"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_below="@id/vehicle_recent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentRight="true"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
+            android:onClick="openEventList"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="\u25B6"
+            android:textColor="#fff"
+            android:textSize="14dp" />
+         <!-- Recent Event end -->
 
-    <TextView
-        android:id="@+id/recent_event_row2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event_Row2"
-        android:textSize="14sp"
-        android:layout_below="@+id/recent_event_col1"
-        android:layout_marginLeft="8dp" />
+        <!-- Recent Service begin -->
+        <TextView
+            android:id="@+id/recent_service_col1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recent_event_row2"
+            android:text="Service_Col1"
+            android:textSize="14sp"
+            android:layout_marginLeft="8dp" />
 
-    <Button
-        android:id="@+id/btn_events_more"
-        android:layout_below="@id/vehicle_recent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:onClick="openEventList"
-        android:text="@string/vehicle_info_more"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="20dp" />
-    <!-- Recent Event end -->
+        <TextView
+            android:id="@+id/recent_service_col2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Service_Col2"
+            android:textSize="14sp"
+            android:layout_below="@+id/recent_event_row2"
+            android:layout_toLeftOf="@+id/btn_service_more"
+            android:layout_marginLeft="8dp" />
 
-    <!-- Recent Service begin -->
-    <TextView
-        android:id="@+id/recent_service_col1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_events_more"
-        android:text="Service_Col1"
-        android:textSize="14sp"
-        android:layout_marginLeft="8dp" />
-
-    <TextView
-        android:id="@+id/recent_service_col2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Service_Col2"
-        android:textSize="14sp"
-        android:layout_below="@+id/btn_events_more"
-        android:layout_toLeftOf="@+id/btn_service_more"
-        android:layout_marginLeft="8dp" />
-
-    <TextView
-        android:id="@+id/recent_service_row2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Service_Row2"
-        android:textSize="14sp"
-        android:layout_below="@+id/recent_service_col1"
-        android:layout_marginLeft="8dp" />
+        <TextView
+            android:id="@+id/recent_service_row2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Service_Row2"
+            android:textSize="14sp"
+            android:layout_below="@+id/recent_service_col1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="20dp" />
 
 
-    <Button
-        android:id="@+id/btn_service_more"
-        android:layout_below="@id/btn_events_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:onClick="openServiceList"
-        android:text="@string/vehicle_info_more"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="20dp" />
-    <!-- Recent Service end -->
+        <Button
+            android:id="@+id/btn_service_more"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_below="@id/recent_event_row2"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentRight="true"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
+            android:onClick="openServiceList"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="\u25B6"
+            android:textColor="#fff"
+            android:textSize="14dp" />
+        <!-- Recent Service end -->
 
-    <!-- Recent fueling begin -->
-    <TextView
-        android:id="@+id/recent_fueling_col1"
-        android:layout_below="@id/btn_service_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fueling_Col1"
-        android:textSize="14sp"
-        android:layout_marginLeft="8dp" />
+        <!-- Recent fueling begin -->
+        <TextView
+            android:id="@+id/recent_fueling_col1"
+            android:layout_below="@id/recent_service_row2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fueling_Col1"
+            android:textSize="14sp"
+            android:layout_marginLeft="8dp" />
 
-    <TextView
-        android:id="@+id/recent_fueling_col2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fueling_Col2"
-        android:textSize="14sp"
-        android:layout_below="@id/btn_service_more"
-        android:layout_toLeftOf="@+id/btn_fueling_more"
-        android:layout_marginLeft="8dp" />
+        <TextView
+            android:id="@+id/recent_fueling_col2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fueling_Col2"
+            android:textSize="14sp"
+            android:layout_below="@id/recent_service_row2"
+            android:layout_toLeftOf="@+id/btn_fueling_more"
+            android:layout_marginLeft="8dp" />
 
-    <TextView
-        android:id="@+id/recent_fueling_row2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fueling_Row2"
-        android:textSize="14sp"
-        android:layout_below="@+id/recent_fueling_col1"
-        android:layout_marginLeft="8dp" />
+        <TextView
+            android:id="@+id/recent_fueling_row2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fueling_Row2"
+            android:textSize="14sp"
+            android:layout_below="@+id/recent_fueling_col1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="20dp" />
 
-    <Button
-        android:id="@+id/btn_fueling_more"
-        android:layout_below="@id/btn_service_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:onClick="openFuelingList"
-        android:text="@string/vehicle_info_more"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="20dp" />
-    <!-- Recent fueling end -->
+        <Button
+            android:id="@+id/btn_fueling_more"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_below="@id/recent_service_row2"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentRight="true"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
+            android:onClick="openFuelingList"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="\u25B6"
+            android:textColor="#fff"
+            android:textSize="14dp" />
+
+        <!-- Recent fueling end -->
+    </RelativeLayout>
 
 
 </RelativeLayout>
