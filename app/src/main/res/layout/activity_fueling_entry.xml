@@ -46,21 +46,7 @@
             android:elevation="0dp"
             android:layout_margin="4dp"
             android:layout_centerVertical="true" />
-        <!--
-        <Button
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="4dp"
-            android:elevation="3dp"
-            android:background="@drawable/round_button"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="+"
-            android:state_enabled="false"
-            android:textColor="#fff"
-            android:textSize="28dp" /> -->
-    </RelativeLayout>
+   </RelativeLayout>
 
 
     <RelativeLayout
@@ -253,10 +239,9 @@
             android:textColor="#fff"
             android:textSize="42dp"
             android:onClick="OnFuelingEntered"
-            android:layout_marginTop="100dp"
-            android:layout_below="@+id/description"
-            android:layout_toLeftOf="@+id/attachment_icon"
-            android:layout_toStartOf="@+id/attachment_icon" />
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/attachment_text"
+            android:layout_toStartOf="@+id/attachment_text" />
 
         <TextView
             android:id="@+id/next_text"

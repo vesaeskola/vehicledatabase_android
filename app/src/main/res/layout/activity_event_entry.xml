@@ -218,12 +218,11 @@
             android:text="\u25B6"
             android:state_enabled="false"
             android:textColor="#fff"
-            android:textSize="42dp"
             android:onClick="OnEventEntered"
-            android:layout_marginTop="100dp"
-            android:layout_below="@+id/description"
-            android:layout_toLeftOf="@+id/attachment_icon"
-            android:layout_toStartOf="@+id/attachment_icon" />
+            android:textSize="42dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/attachment_text"
+            android:layout_toStartOf="@+id/attachment_text" />
 
         <TextView
             android:id="@+id/next_text"

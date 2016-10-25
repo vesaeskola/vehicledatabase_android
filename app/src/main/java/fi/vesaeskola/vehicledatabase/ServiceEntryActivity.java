@@ -49,7 +49,7 @@ public class ServiceEntryActivity extends ActionEntryActivity {
         if (mVehicleId != -1) {
             title.setText(R.string.service_entry_new_service);
 
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
             Date now = new Date();
             now.setTime(mDateLong);
             textDate.setText(simpleDataFormat.format(now));
@@ -72,7 +72,7 @@ public class ServiceEntryActivity extends ActionEntryActivity {
 
                 mDescription.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DESCRIPTION)));
                 mDateLong = cursor.getLong(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DATE));
-                SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+                SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
                 Date now = new Date();
                 now.setTime(mDateLong);
                 textDate.setText(simpleDataFormat.format(now));

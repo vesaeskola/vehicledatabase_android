@@ -28,16 +28,16 @@
     <TextView
         android:id="@+id/add_vehicle_tip_text"
         android:text="@string/wellcome_message"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignTop="@+id/add_vehicle_tip"
         android:layout_alignLeft="@+id/add_vehicle_tip"
         android:layout_alignRight="@+id/add_vehicle_tip"
         android:layout_alignBottom="@+id/add_vehicle_tip"
-        android:layout_marginTop="12pt"
-        android:layout_marginLeft="8pt"
-        android:layout_marginRight="18pt"
-        android:layout_marginBottom="8pt"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginBottom="14dp"
         android:textSize="14sp"
         android:elevation="9dp" />
 

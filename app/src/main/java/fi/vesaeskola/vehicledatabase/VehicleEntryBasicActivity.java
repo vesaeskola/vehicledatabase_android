@@ -96,7 +96,8 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
     public void pickImageWithCamera(View view) {
         Log.d(TAG, "pickImageWithCamera");
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        String timeStamp = new SimpleDateFormat(getResources().getString(R.string.general_image_name_date_template)).format(new Date());
         String imageFileName = Constants.JPEG_FILE_PREFIX + timeStamp + "_";
         File f = null;
         try {
@@ -148,8 +149,6 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
         if (resultCode == Activity.RESULT_OK) {
 
             Log.d(TAG, "OnActivityResult: RESULT_OK");
@@ -165,6 +164,7 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
 
                 // Change the camera icon
                 ImageView imageView = (ImageView) findViewById(R.id.attachment_icon);
+                imageView.setImageResource(android.R.color.transparent);
                 imageView.setImageResource(R.drawable.klemmari);
 
                 //TextView textAttachmentCout = (TextView) findViewById(R.id.attachment_text);

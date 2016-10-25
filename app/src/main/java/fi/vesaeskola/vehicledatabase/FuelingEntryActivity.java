@@ -57,7 +57,7 @@ public class FuelingEntryActivity extends ActionEntryActivity {
         if (mVehicleId != -1) {
             title.setText(R.string.fueling_entry_new_refueling);
 
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
             Date now = new Date();
             now.setTime(mDateLong);
             textDate.setText(simpleDataFormat.format(now));
@@ -83,7 +83,7 @@ public class FuelingEntryActivity extends ActionEntryActivity {
                 mMileage.setText(String.valueOf(iMileage));
                 mDescription.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DESCRIPTION)));
                 mDateLong = cursor.getLong(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DATE));
-                SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+                SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
                 Date now = new Date();
                 now.setTime(mDateLong);
                 textDate.setText(simpleDataFormat.format(now));

@@ -227,7 +227,7 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
             // Refueling, column 2
             long fuelingDate = cursor.getLong(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DATE));
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
             Date now = new Date();
             now.setTime(fuelingDate);
             tvFuelingCol2.setText(simpleDataFormat.format(now));
@@ -282,7 +282,6 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
             btnServiceMore.setEnabled(true);
 
             // Service, column 1
-            //tvServiceCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_MILEAGE)) + " mi.");
             tvServiceCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + " ");
             if (mOdometerUnitId == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) {
                 tvServiceCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_mail));
@@ -292,7 +291,7 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
             // Service, column 2
             long serviceDate = cursor.getLong(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DATE));
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
             Date now = new Date();
             now.setTime(serviceDate);
             tvServiceCol2.setText(simpleDataFormat.format(now));
@@ -300,15 +299,11 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
             // Service, row 2
             // TBD: Handle currency unit ($, £ €) somehow
             String description = cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DESCRIPTION));
-            if (description.length() < 1) {
-                ;//tvServiceRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_EXPENSE)) + " $");
-            } else if (description.length() > 34) {
+            if (description.length() > 34) {
                 String shortDescription = description.substring(0, 34);
-                //tvServiceRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_PRISE)) + " $ @" + shortDescription);
                 tvServiceRow2.setText(shortDescription + "..");
 
-            } else {
-                //tvServiceRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_PRISE)) + " $ @" + description);
+            } else if (description.length() > 0) {
                 tvServiceRow2.setText(description);
             }
         } else {
@@ -341,7 +336,6 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
             btnEventMore.setEnabled(true);
 
             // Event, column 1
-            //tvEventCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_MILEAGE)) + " mi.");
             tvEventCol1.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_MILEAGE)) + " ");
             if (mOdometerUnitId == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) {
                 tvEventCol1.append(getResources().getString(R.string.vehicle_entry_detail_short_mail));
@@ -351,21 +345,17 @@ public class VehicleInfoActivity extends AppCompatActivity implements OnMenuItem
 
             // Event, column 2
             long eventDate = cursor.getLong(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DATE));
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
             Date now = new Date();
             now.setTime(eventDate);
             tvEventCol2.setText(simpleDataFormat.format(now));
 
             // Event, row 2
             String description = cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DESCRIPTION));
-            if (description.length() < 1) {
-                ;//tvEventRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_PRISE)) + " $");
-            } else if (description.length() > 32) {
+            if (description.length() > 32) {
                 String shortDescription = description.substring(0, 32);
-                //tvEventRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_PRISE)) + " $ @" + shortDescription);
                 tvEventRow2.setText(shortDescription + "..");
-            } else {
-                //tvEventRow2.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_PRISE)) + " $ @" + description);
+            } else if (description.length() > 0){
                 tvEventRow2.setText(description);
 
             }

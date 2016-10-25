@@ -47,8 +47,6 @@ public class DatePickerFragment extends DialogFragment
             mMonth = calendar.get(Calendar.MONTH);
             mDay = calendar.get(Calendar.DAY_OF_MONTH);
         }
-        //SimpleDateFormat month_date = new SimpleDateFormat("MMM");
-        //String month_name = month_date.format(calendar.getTime());
 
         // Create a new instance of DatePickerDialog and return it
         return new DatePickerDialog(getActivity(), this, mYear, mMonth, mDay);
@@ -62,7 +60,7 @@ public class DatePickerFragment extends DialogFragment
         calendar.set(year, month, day);
 
         // Set entered date into button label
-        SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+        SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
         String strDate = simpleDataFormat.format(calendar.getTime());
         textDate.setText(strDate);
 

@@ -224,7 +224,7 @@ public class ActionListActivity extends AppCompatActivity implements PopupMenu.O
 
                     Date actionDate = new Date();
                     actionDate.setTime(cursor.getLong(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_DATE)));
-                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
                     action.row1_col2 = simpleDataFormat.format(actionDate);
 
                     String sAmount = VehileDatabaseApplication.ConvertIntToPlatformString(cursor.getInt(cursor.getColumnIndex(VehicleContract.FuelingEntry.COL_AMOUNT)));
@@ -255,7 +255,7 @@ public class ActionListActivity extends AppCompatActivity implements PopupMenu.O
 
                     Date actionDate = new Date();
                     actionDate.setTime(cursor.getLong(cursor.getColumnIndex(VehicleContract.ServiceEntry.COL_DATE)));
-                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
                     action.row1_col2 = simpleDataFormat.format(actionDate);
 
                     // TBD: Check this: http://stackoverflow.com/questions/12694192/locale-currency-symbol
@@ -278,7 +278,7 @@ public class ActionListActivity extends AppCompatActivity implements PopupMenu.O
 
                     Date actionDate = new Date();
                     actionDate.setTime(cursor.getLong(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DATE)));
-                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+                    SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
                     action.row1_col2 = simpleDataFormat.format(actionDate);
 
                     // TBD: Check this: http://stackoverflow.com/questions/12694192/locale-currency-symbol

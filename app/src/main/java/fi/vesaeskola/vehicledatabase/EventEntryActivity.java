@@ -48,7 +48,7 @@ public class EventEntryActivity extends ActionEntryActivity {
         if (mVehicleId != -1) {
             title.setText(R.string.event_entry_new_event);
 
-            SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+            SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
             Date now = new Date();
             now.setTime(mDateLong);
             textDate.setText(simpleDataFormat.format(now));
@@ -69,7 +69,7 @@ public class EventEntryActivity extends ActionEntryActivity {
                 mMileage.setText(String.valueOf(iMileage));
                 mDescription.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DESCRIPTION)));
                 mDateLong = cursor.getLong(cursor.getColumnIndex(VehicleContract.EventEntry.COL_DATE));
-                SimpleDateFormat simpleDataFormat = new SimpleDateFormat("dd MMM yy");
+                SimpleDateFormat simpleDataFormat = new SimpleDateFormat(getResources().getString(R.string.general_short_date));
                 Date now = new Date();
                 now.setTime(mDateLong);
                 textDate.setText(simpleDataFormat.format(now));

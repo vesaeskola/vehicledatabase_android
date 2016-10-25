@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--
     Resource name: values/string.xml
     Abstract: Localization file for English
@@ -26,6 +28,10 @@
     <string name="confirmation_dialog_cancel">Cancel</string>
     <string name="confirmation_dialog_delete_vehicle_title">Delete Vehicle</string>
     <string name="confirmation_dialog_delete_vehicle">Do you really want to delete this vehicle ?</string>
+
+    <!-- Localization strings -->
+    <string name="general_short_date">dd MMM yy</string>
+    <string name="general_image_name_date_template">yyyyMMdd_HHmmss</string>
 
 
     <!-- activity_vehicle_list.xml -->

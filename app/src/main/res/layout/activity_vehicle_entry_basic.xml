@@ -111,6 +111,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/date_icon"
+            android:textSize="@dimen/activity_text_size"
             android:layout_toRightOf="@id/mileage_icon"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="8dp"
@@ -131,6 +132,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mileage_icon"
+            android:textSize="@dimen/activity_text_size"
             android:layout_toRightOf="@id/make_icon"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="8dp"
@@ -151,6 +153,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/make_icon"
+            android:textSize="@dimen/activity_text_size"
             android:layout_toRightOf="@id/model_icon"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="8dp"
@@ -165,12 +168,11 @@
             android:text="\u25B6"
             android:state_enabled="false"
             android:textColor="#fff"
-            android:textSize="28dp"
             android:onClick="OnVehicleEntered"
-            android:layout_marginTop="100dp"
-            android:layout_below="@+id/model_icon"
-            android:layout_toLeftOf="@+id/attachment_icon"
-            android:layout_toStartOf="@+id/attachment_icon" />
+            android:textSize="42dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/attachment_text"
+            android:layout_toStartOf="@+id/attachment_text" />
 
         <TextView
             android:id="@+id/next_text"

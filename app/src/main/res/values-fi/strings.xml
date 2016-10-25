@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--
     Resource name: values-fi/string.xml
     Abstract: Localization file for Finnish
@@ -10,14 +12,14 @@
     <string name="app_name">Ajoneuvotietokanta</string>
 
     <!-- general localizations -->
-    <string name="wellcome_message">tervetuloa käyttämään database applikaatiota.\nLisää ensimmäinen ajoneuvosi täältä.</string>
+    <string name="wellcome_message">Tervetuloa käyttämään ajoneuvotietokantaa.\nVoit lisätä ensimmäinen ajoneuvosi klikkaamalla plus ikonia.</string>
     <string name="activity_entry_done">OK</string>
     <string name="activity_entry_next">Seuraava</string>
-    <string name="activity_entry_pick_date">Valitse p�iv�m��r�</string>
+    <string name="activity_entry_pick_date">Valitse päivämäärä</string>
     <string name="activity_entry_pick_image">Ota liitekuva</string>
     <string name="activity_entry_mileage">Matkamittari</string>
     <string name="activity_entry_expense">Hinta</string>
-    <string name="activity_entry_amount">M��r�</string>
+    <string name="activity_entry_amount">Määrä</string>
     <string name="activity_entry_description">Kuvaus</string>
     <string name="activity_entry_snap_image">liitä</string>
     <string name="activity_entry_date">14-Mar-16</string>
@@ -25,7 +27,10 @@
     <string name="confirmation_dialog_ok">OK</string>
     <string name="confirmation_dialog_cancel">Peruuta</string>
     <string name="confirmation_dialog_delete_vehicle_title">Poista Ajoneuvo</string>
-    <string name="confirmation_dialog_delete_vehicle">Haluatko todella poistaa t�m�n ajoneuvon ?</string>
+    <string name="confirmation_dialog_delete_vehicle">Haluatko todella poistaa tämän ajoneuvon ?</string>
+
+    <!-- Localization strings -->
+    <string name="general_short_date">d.M.yyyy</string>
 
     <!-- activity_vehicle_list.xml -->
     <string name="title">Ajoneuvot</string>
@@ -38,8 +43,8 @@
     <string name="vehicle_info_fueling">Tankkaus</string>
     <string name="vehicle_info_service">Huolto</string>
     <string name="vehicle_info_event">Tapahtuma</string>
-    <string name="vehicle_info_more">Lis��</string>
-    <string name="vehicle_info_recent">Viimeisimm�t:</string>
+    <string name="vehicle_info_more">Lisää</string>
+    <string name="vehicle_info_recent">Viimeisimmät:</string>
     <string name="vehicle_info_no_fuelings">Ei tankkauksia</string>
     <string name="vehicle_info_no_services">Ei huoltoja</string>
     <string name="vehicle_info_no_events">Ei tapahtumia</string>
@@ -56,18 +61,18 @@
     <!-- activity_vehicle_entry_detail.xml -->
     <string name="vehicle_entry_detail_year">Valmistusvuosi</string>
     <string name="vehicle_entry_detail_vincode">VIN koodi</string>
-    <string name="vehicle_entry_detail_fuel_unit">Polttoaineen yksikkö:</string>
-    <string name="vehicle_entry_detail_odometer_unit">Matkamittarin yksikkö:</string>
+    <string name="vehicle_entry_detail_fuel_unit">lit/ga:</string>
+    <string name="vehicle_entry_detail_odometer_unit">km/mil:</string>
 
     <string name="vehicle_entry_detail_liter">Litra</string>
     <string name="vehicle_entry_detail_gallon">Gallona</string>
     <string name="vehicle_entry_detail_mail">Maili</string>
 
     <string name="vehicle_entry_detail_km">Km</string>
-    <string name="vehicle_entry_detail_short_liter"> li.</string>
-    <string name="vehicle_entry_detail_short_gallon"> ga.</string>
-    <string name="vehicle_entry_detail_short_mail"> mi.</string>
-    <string name="vehicle_entry_detail_short_km"> km</string>
+    <string name="vehicle_entry_detail_short_liter">lit.</string>
+    <string name="vehicle_entry_detail_short_gallon">ga.</string>
+    <string name="vehicle_entry_detail_short_mail">mi.</string>
+    <string name="vehicle_entry_detail_short_km">km</string>
 
     <!-- activity_service_entry.xml -->
     <string name="service_entry_new_service">Uusi huolto</string>
