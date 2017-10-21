@@ -17,14 +17,15 @@ Copyright (C) 2016 Vesa Eskola.
 --*/
 package fi.vesaeskola.vehicledatabase;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import android.view.MenuInflater;
@@ -35,30 +36,26 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.Locale;
 
 import database.DBEngine;
+import database.VehicleContract;
 import utilities.EnginePool;
 
-
-public class ActionEntryActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class ActionEntryActivity extends ImageAttachmentActivity implements PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "ActionEntryActivity";
 
     protected DBEngine mDatabaseEngine;
     protected int mVehicleId = -1;
     protected int mActionId = -1;
+    protected int mImageLinkCount = 0;
     public long mDateLong;
     public EditText mMileage, mExpense, mDescription;
-    protected String mCurrentPhotoPath;
-    protected int mAttachmentCount = 0;
-
-
+    protected ArrayList<String> mImagePathList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +63,6 @@ public class ActionEntryActivity extends AppCompatActivity implements PopupMenu.
 
         // SQLiteOpenHelper based helper to open or create database.
         // Note: Will delete existing data if new database structure is used.
-        //mDatabaseEngine = new DBEngine(this);
         mDatabaseEngine = (DBEngine) EnginePool.getEngine("DBEngine");
 
         Bundle bundle = getIntent().getExtras();
@@ -82,6 +78,24 @@ public class ActionEntryActivity extends AppCompatActivity implements PopupMenu.
             mActionId = bundle.getInt("action_Id");
             Log.d(TAG, "ActionId: " + mActionId);
         }
+
+        if (getIntent().hasExtra("vehicle_make")) {
+            String make = bundle.getString("vehicle_make");
+            TextView tvMake = (TextView)findViewById(R.id.vehicle_make);
+            tvMake.setText(make);
+
+        }
+        if (getIntent().hasExtra("vehicle_model")) {
+            String model = bundle.getString("vehicle_model");
+            TextView tvModel = (TextView)findViewById(R.id.vehicle_model);
+            tvModel.setText(model);
+        }
+        if (getIntent().hasExtra("vehicle_regplate")) {
+            String regplate = bundle.getString("vehicle_regplate");
+            TextView tvRegPlate = (TextView)findViewById(R.id.vehicle_regplate);
+            tvRegPlate.setText(regplate);
+        }
+
 
 
         final Calendar calendar = Calendar.getInstance();
@@ -100,6 +114,32 @@ public class ActionEntryActivity extends AppCompatActivity implements PopupMenu.
         textCurrencySymbol.setText(currency.getSymbol());
     }
 
+    public void OnOpenMenu(View view) {
+        View parent = (View) view.getParent();
+        Log.d(TAG, "onOpenMenu");
+
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.setOnMenuItemClickListener(ActionEntryActivity.this);
+        MenuInflater inflater = popup.getMenuInflater();
+
+        inflater.inflate(R.menu.menu_01, popup.getMenu());
+
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuitem_show_privacy_policy: {
+                Log.d(TAG, "Menu item selected: Privacy policy");
+                return true;
+            }
+
+            default: {
+                return false;
+            }
+        }
+    }
     public void onPickDate(View view) {
         DatePickerFragment newFragment = new DatePickerFragment();
 
@@ -120,132 +160,83 @@ public class ActionEntryActivity extends AppCompatActivity implements PopupMenu.
         PopupMenu popup = new PopupMenu(this, view);
         popup.setOnMenuItemClickListener(ActionEntryActivity.this);
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.vehicle_info, popup.getMenu());
+        inflater.inflate(R.menu.menu_02, popup.getMenu());
 
         popup.show();
     }
 
+    protected void storeImageLinks (SQLiteDatabase db, int rowID, int actionType) {
+        ContentValues values = new ContentValues();
+
+        for (int i = 0; i < mImagePathList.size(); i++) {
+
+            // Store image link
+            String imageLink = mImagePathList.get(i);
+            values.put(VehicleContract.ImageLinkEntry.COL_ACTIONID, rowID);
+            values.put(VehicleContract.ImageLinkEntry.COL_ACTIONTYPE, actionType);  // 1 = fueling, 2 = service 3 = event
+            values.put(VehicleContract.ImageLinkEntry.COL_IMAGEPATH, imageLink);
+
+            db.insertWithOnConflict(VehicleContract.ImageLinkEntry.TABLE,
+                    null,
+                    values,
+                    SQLiteDatabase.CONFLICT_REPLACE);
+            Log.d(TAG, "New image link entered to database: " + mImagePathList.get(i));
+        }
+
+        mImagePathList.clear();
+    }
+
+    //protected void restoreImageLinks (SQLiteDatabase db, int actionID, int actionType) {
+    protected void readImageLinkCount (SQLiteDatabase db, int actionID, int actionType) {
+        String selectQuery = "SELECT  * FROM " + VehicleContract.ImageLinkEntry.TABLE +
+                " WHERE " + VehicleContract.ImageLinkEntry.COL_ACTIONID + " = " + actionID +
+                " AND " + VehicleContract.ImageLinkEntry.COL_ACTIONTYPE + " = " + actionType;
+        Log.d(TAG, "restore Image links: selectQuery: " + selectQuery);
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        while (cursor.moveToNext()) {
+            String imagePath = cursor.getString(cursor.getColumnIndex(VehicleContract.ImageLinkEntry.COL_IMAGEPATH));
+            if (imagePath != null) {
+                mImageLinkCount++;
+            }
+            //mImagePathList.add(imagePath);
+        }
+    }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.RequestCode.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            // 1: setPic (scale image and set into layout widget)
-            //setPic();
+        if (resultCode == Activity.RESULT_OK) {
 
-            // 2: galleryAddPic()
-            galleryAddPic();
+            Log.d(TAG, "OnActivityResult: RESULT_OK");
 
-            mAttachmentCount = mAttachmentCount + 1;
+            if (requestCode == Constants.RequestCode.REQUEST_IMAGE_CAPTURE) {
 
-            // Change the camera icon
-            ImageView imageView = (ImageView) findViewById(R.id.attachment_icon);
-            imageView.setImageResource(R.drawable.klemmari);
+                if (mCurrentPhotoPath != null) {
+                    mImagePathList.add(mCurrentPhotoPath);
+                }
 
-            TextView textAttachmentCout = (TextView) findViewById(R.id.attachment_text);
-            textAttachmentCout.setText(String.valueOf(mAttachmentCount));
+                // TBD: Count attachments here and update R.id.attachment_text
+                ImageView attachmentIcon = (ImageView) findViewById(R.id.attachment_icon);
+                TextView attachmentText = (TextView) findViewById(R.id.attachment_text);
 
-            mCurrentPhotoPath = null;
-        }
-    }
+                attachmentIcon.setVisibility(View.VISIBLE);
+                attachmentText.setVisibility(View.VISIBLE);
+                mImageLinkCount += 1;
+                attachmentText.setText(String.valueOf(mImageLinkCount));
 
+                // Get thumpnail bitmap of taken image
+                //Bundle extras = data.getExtras();
+                //Bitmap imageBitmap = (Bitmap) extras.get("data");
+                //mImageView.setImageBitmap(imageBitmap);
 
-    public void pickImageWithCamera(View view) {
-        Log.d(TAG, "pickImageWithCamera");
+                super.imageCaptured();
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = Constants.JPEG_FILE_PREFIX + timeStamp + "_";
-        File f = null;
-        try {
-            f = File.createTempFile(imageFileName, ".jpg", getFilesDir());
-        } catch (IOException ex) {
-            Log.d(TAG, "createImageFile caused exception");
-            mCurrentPhotoPath = null;
-            ex.printStackTrace();
-            return;
-        }
-
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            Uri imageUri = FileProvider.getUriForFile(this, Constants.AUTHORITY , f);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            Log.d(TAG, "pickImageWithCamera. start activity to take photo");
-            startActivityForResult(takePictureIntent, Constants.RequestCode.REQUEST_IMAGE_CAPTURE);
-
-            mCurrentPhotoPath = f.getAbsolutePath();
-        }
-    }
+                // Store image link to db already now
 
 
-    // Invoke the system's media scanner to add vehicle database photos to the Media Provider's
-    // database, making it available in the Android Gallery application and to other apps.
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }
-
-    // TBD: if target size is zero do nothing !
-    /*
-    private void setPic() {
-        // Get the dimensions of the View
-        ImageView imageView = (ImageView) findViewById(R.id.actionImageView);
-
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
-
-        // TBD: Consider how layout is able to define image size, currently the other
-        // dimension is zero
-        if (targetW == 0 || targetH == 0 )
-        {
-            targetW = 480;
-            targetH = 360;
-        }
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        imageView.setImageBitmap(bitmap);
-        imageView.setVisibility(View.VISIBLE);
-    }
-    */
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menuitem_show_privacy_policy: {
-                Log.d(TAG, "Menu item selected: Privacy policy");
-
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.privacy_policy_title)
-                        .setMessage(R.string.privacy_policy_content)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Log.d(TAG, "Vehicle delete selected");
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, null).show();
-                return true;
-            }
-
-            default: {
-                return false;
             }
         }
     }
-
 }

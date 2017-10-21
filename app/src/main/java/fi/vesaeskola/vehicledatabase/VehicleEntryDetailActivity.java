@@ -20,14 +20,18 @@ Copyright (C) 2016 Vesa Eskola.
 package fi.vesaeskola.vehicledatabase;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -35,11 +39,13 @@ import database.DBEngine;
 import database.VehicleContract;
 import utilities.EnginePool;
 
-public class VehicleEntryDetailActivity extends AppCompatActivity {
+public class VehicleEntryDetailActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "VehicleEntryDetailAct.";
     private DBEngine mDatabaseEngine;
     public EditText mYear, mVincode, mDescription;
+    private FragmentManager mFm = getFragmentManager();
     private int mVehicleId;
+
 
 
     @Override
@@ -72,7 +78,10 @@ public class VehicleEntryDetailActivity extends AppCompatActivity {
 
             // TBD: Change to be if clause
             if (cursor.moveToNext()) {
-                mYear.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_YEAR)));
+                String yearText = cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_YEAR));
+                if (yearText != null) {
+                    mYear.setText(yearText);
+                }
                 mVincode.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_VINCODE)));
                 mDescription.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_DESCRIPTION)));
 
@@ -81,11 +90,27 @@ public class VehicleEntryDetailActivity extends AppCompatActivity {
                 toBeChecked =  (cursor.getInt(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID)) == Constants.OdometerUnitId.ODOMETER_UNIT_MILES) ?  (RadioButton)findViewById(R.id.radioButton3) : (RadioButton)findViewById(R.id.radioButton4);
                 toBeChecked.setChecked(true);
             }
+
+            db.close();
         }
         else {
             title.setText(R.string.vehicle_entry_basic_new_vehicle);
         }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+
+            Log.d(TAG, "OnActivityResult: RESULT_OK");
+
+            /*
+            if (requestCode == Constants.RequestCode.REQUEST_IMAGE_CAPTURE) {
+                mVehicleImagePath = mCurrentPhotoPath;
+                super.imageCaptured();
+            }
+            */
+        }
     }
 
     public void OnVehicleDetailEntered(View view) {
@@ -99,9 +124,15 @@ public class VehicleEntryDetailActivity extends AppCompatActivity {
 
         Intent retIntent = new Intent();
 
-        retIntent.putExtra("ret_year", Integer.valueOf(mYear.getText().toString()));
-        retIntent.putExtra("ret_vincode", mVincode.getText().toString());
-        retIntent.putExtra("ret_description", mDescription.getText().toString());
+        if (mYear.length() > 0) {
+            retIntent.putExtra("ret_year", Integer.valueOf(mYear.getText().toString()));
+        }
+        if (mVincode.length() > 0) {
+            retIntent.putExtra("ret_vincode", mVincode.getText().toString());
+        }
+        if (mDescription.length() > 0) {
+            retIntent.putExtra("ret_description", mDescription.getText().toString());
+        }
 
         int fuelUnit = (((RadioButton) findViewById(R.id.radioButton1)).isChecked()) ? Constants.FuelUnitId.FUEL_UNIT_GALLON : Constants.FuelUnitId.FUEL_UNIT_LITER;
         int odometerUnit = (((RadioButton) findViewById(R.id.radioButton3)).isChecked()) ? Constants.OdometerUnitId.ODOMETER_UNIT_MILES : Constants.OdometerUnitId.ODOMETER_UNIT_KM;
@@ -118,5 +149,37 @@ public class VehicleEntryDetailActivity extends AppCompatActivity {
         setResult(Activity.RESULT_CANCELED, returnIntent);
         finish();
     }
+    public void OnOpenMenu(View view) {
+        View parent = (View) view.getParent();
+        Log.d(TAG, "onOpenMenu");
 
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.setOnMenuItemClickListener(VehicleEntryDetailActivity.this);
+        MenuInflater inflater = popup.getMenuInflater();
+
+        inflater.inflate(R.menu.menu_02, popup.getMenu());
+
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuitem_test: {
+                Log.d(TAG, "Menu item selected: Test");
+
+                ConfirmationDialogFragment alertFragment = new ConfirmationDialogFragment();
+                alertFragment.configure (Constants.ConfirmationDialogReason.CONF_REASON_TEST, R.drawable.expense_icon3, "Test", "Testing the dialog");
+                alertFragment.show(mFm, "");
+            }
+            case R.id.menuitem_show_privacy_policy: {
+                Log.d(TAG, "Menu item selected: Privacy policy");
+                return true;
+            }
+
+            default: {
+                return false;
+            }
+        }
+    }
 }

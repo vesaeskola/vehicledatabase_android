@@ -19,25 +19,21 @@ Copyright (C) 2016 Vesa Eskola.
 package fi.vesaeskola.vehicledatabase;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import database.DBEngine;
 import database.VehicleContract;
@@ -45,11 +41,11 @@ import utilities.EnginePool;
 
 import static android.content.ContentValues.TAG;
 
-public class VehicleEntryBasicActivity extends AppCompatActivity {
+public class VehicleEntryBasicActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     private static final String TAG = "VehicleEntryBasicAct.";
     private DBEngine mDatabaseEngine;
     public EditText mMake, mModel, mRegplate;
-    protected String mCurrentPhotoPath;
+    private FragmentManager mFm = getFragmentManager();
     private int mVehicleId;
 
     @Override
@@ -84,50 +80,20 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
                 mMake.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MAKE)));
                 mModel.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_MODEL)));
                 mRegplate.setText(cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_REGPLATE)));
+                //mVehicleImagePath = cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_IMAGEPATH));
             }
         } else {
             mVehicleId = -1;
             title.setText(R.string.vehicle_entry_basic_new_vehicle);
-
             Log.d(TAG, "Create a new vehicle");
         }
-    }
 
-    public void pickImageWithCamera(View view) {
-        Log.d(TAG, "pickImageWithCamera");
-
-
-        String timeStamp = new SimpleDateFormat(getResources().getString(R.string.general_image_name_date_template)).format(new Date());
-        String imageFileName = Constants.JPEG_FILE_PREFIX + timeStamp + "_";
-        File f = null;
-        try {
-            f = File.createTempFile(imageFileName, ".jpg", getFilesDir());
-        } catch (IOException ex) {
-            Log.d(TAG, "createImageFile caused exception");
-            mCurrentPhotoPath = null;
-            ex.printStackTrace();
-            return;
+        /*
+        if (mVehicleImagePath == null) {
+            ImageView imageView = (ImageView) findViewById(R.id.klemmari_icon);
+            imageView.setVisibility(View.INVISIBLE);
         }
-
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            Uri imageUri = FileProvider.getUriForFile(this, Constants.AUTHORITY, f);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            Log.d(TAG, "pickImageWithCamera. start activity to take photo");
-            startActivityForResult(takePictureIntent, Constants.RequestCode.REQUEST_IMAGE_CAPTURE);
-
-            mCurrentPhotoPath = f.getAbsolutePath();
-        }
-    }
-
-    // Invoke the system's media scanner to add vehicle database photos to the Media Provider's
-    // database, making it available in the Android Gallery application and to other apps.
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
+        */
     }
 
     public void OnVehicleCanceled(View view) {
@@ -144,7 +110,41 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
             // Open in edit existing mode
             intent.putExtra("vehicle_Id", mVehicleId);
         }
-        startActivityForResult(intent, Constants.RequestCode.REQUEST_NEW_VEHICLE_STEP1);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_VEHICLE_INFO);
+    }
+
+    public void OnOpenMenu(View view) {
+        View parent = (View) view.getParent();
+        Log.d(TAG, "onOpenMenu");
+
+        PopupMenu popup = new PopupMenu(this, view);
+        popup.setOnMenuItemClickListener(VehicleEntryBasicActivity.this);
+        MenuInflater inflater = popup.getMenuInflater();
+
+        inflater.inflate(R.menu.menu_02, popup.getMenu());
+
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuitem_test: {
+                Log.d(TAG, "Menu item selected: Test");
+
+                ConfirmationDialogFragment alertFragment = new ConfirmationDialogFragment();
+                alertFragment.configure (Constants.ConfirmationDialogReason.CONF_REASON_TEST, R.drawable.expense_icon3, "Test", "Testing the dialog");
+                alertFragment.show(mFm, "");
+            }
+            case R.id.menuitem_show_privacy_policy: {
+                Log.d(TAG, "Menu item selected: Privacy policy");
+                return true;
+            }
+
+            default: {
+                return false;
+            }
+        }
     }
 
     @Override
@@ -153,26 +153,14 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
 
             Log.d(TAG, "OnActivityResult: RESULT_OK");
 
+            /*
             if (requestCode == Constants.RequestCode.REQUEST_IMAGE_CAPTURE) {
-                // 1: setPic (scale image and set into layout widget)
-                //setPic();
-
-                // 2: galleryAddPic()
-                galleryAddPic();
-
-                //mAttachmentCount = mAttachmentCount + 1;
-
-                // Change the camera icon
+                mVehicleImagePath = mCurrentPhotoPath;
                 ImageView imageView = (ImageView) findViewById(R.id.attachment_icon);
-                imageView.setImageResource(android.R.color.transparent);
-                imageView.setImageResource(R.drawable.klemmari);
-
-                //TextView textAttachmentCout = (TextView) findViewById(R.id.attachment_text);
-                //textAttachmentCout.setText(String.valueOf(mAttachmentCount));
-
-                mCurrentPhotoPath = null;
+                imageView.setVisibility(View.VISIBLE);
+                super.imageCaptured ();
             }
-            else if (requestCode == Constants.RequestCode.REQUEST_NEW_VEHICLE_STEP1) {
+            else*/ if (requestCode == Constants.RequestCode.REQUEST_VEHICLE_INFO) {
                 // Open or create database file
                 SQLiteDatabase db = mDatabaseEngine.getWritableDatabase();
 
@@ -181,6 +169,13 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
                 String description = data.getStringExtra("ret_description");
                 int fuelUnit = data.getIntExtra("ret_fuel_unit", -1);
                 int odometerUnit = data.getIntExtra("ret_odometer_unit", -1);
+                /*
+                String detImagePath = data.getStringExtra("ret_imagePath");
+                if (detImagePath != null) {
+                    mVehicleImagePath = detImagePath;
+                }
+                */
+
 
                 ContentValues values = new ContentValues();
                 values.put(VehicleContract.VehicleEntry.COL_VINCODE, vincode);
@@ -191,6 +186,7 @@ public class VehicleEntryBasicActivity extends AppCompatActivity {
                 values.put(VehicleContract.VehicleEntry.COL_DESCRIPTION, description);
                 values.put(VehicleContract.VehicleEntry.COL_FUEL_UNIT_ID, fuelUnit);
                 values.put(VehicleContract.VehicleEntry.COL_ODOMETER_UNIT_ID, odometerUnit);
+                //values.put(VehicleContract.VehicleEntry.COL_IMAGEPATH, mVehicleImagePath);
 
                 // TBD: This will be entered later
                 //values.put(VehicleContract.VehicleEntry.COL_IMAGEPATH, "null");

@@ -2,72 +2,156 @@
 
 <!--
     Layout name: action_list_item.xml
-    Abstract: Layout for the ListView item of ActionListActivity view ListView widget.
+    Abstract: Layout for the ListView item used in ActionListActivity page.
     Environment: Android
     Copyright (C) 2016 Vesa Eskola.
 -->
+
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
+    android:layout_marginTop="4dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp" >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <TextView
-            android:id="@+id/row1_col1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Row1_Col1"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/row2_col1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Row2_Col1"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
+    <!-- Row 1 begin -->
+    <!-- Typically Mileage -->
+    <TextView
+        android:id="@+id/row1_col1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:text="Row1_Col1"
+        android:textSize="@dimen/list_view_normal_text_size" />
+
+    <!-- Typically Date -->
+    <TextView
+        android:id="@+id/row1_col2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="4dp"
+        android:text="Row1_Col2"
+        android:textSize="@dimen/list_view_normal_text_size"
+        android:layout_toLeftOf="@+id/attachment_icon"
+        android:onClick="openAttachments" />
+
+    <!-- Attachement icon -->
+    <ImageView
+        android:id="@+id/attachment_icon"
+        android:layout_width="16dp"
+        android:layout_height="36dp"
+        android:elevation="9dp"
+        android:layout_marginRight="4dp"
+        android:background="@drawable/klemmari2"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:onClick="openAttachments" />
 
-        <TextView
-            android:id="@+id/row1_col2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Row1_Col2"
-            android:textSize="18sp"
-            android:layout_gravity="right" />
+    <TextView
+        android:id="@+id/attachment_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/fly_text_size"
+        android:layout_alignRight="@+id/attachment_icon"
+        android:layout_marginRight="-4dp"
+        android:layout_marginTop="20dp"
+        android:elevation="10dp"
+        android:text="0"
+        android:background="#f57f17"
+        android:padding="@dimen/text_padding"
+        android:onClick="openAttachments" />
 
-        <TextView
-            android:id="@+id/row2_col2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Row2_Col2"
-            android:textSize="14sp" />
+    <!-- Row 1 end -->
 
-        <!--
-        <Button
-            android:id="@+id/vehicle_open"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:onClick="openVehicle"
-            android:text="Open" />
-            -->
-    </LinearLayout>
+    <!-- Row 2 begin -->
+    <!-- Typically Amount or prise -->
+    <TextView
+        android:id="@+id/row2_col1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/row1_col1"
+        android:text="Row2_Col1"
+        android:textSize="@dimen/list_view_small_text_size" />
+
+    <!-- Service or action type -->
+    <TextView
+        android:id="@+id/row2_col2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/row1_col1"
+        android:layout_toLeftOf="@+id/attachment_icon"
+        android:layout_marginRight="4dp"
+        android:text="Row2_Col2"
+        android:textSize="@dimen/list_view_small_text_size"
+        android:onClick="openAttachments" />
+
+    <!-- Row 3 begin -->
+    <!-- Typically description -->
+    <TextView
+        android:id="@+id/row3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/row2_col1"
+        android:text="Row3"
+        android:textSize="@dimen/list_view_small_text_size" />
+
+
 
 </RelativeLayout>
 
+    <!--
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp" >
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/row1_col1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Row1_Col1"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/row2_col1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Row2_Col1"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+
+            <TextView
+                android:id="@+id/row1_col2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Row1_Col2"
+                android:textSize="18sp"
+                android:layout_gravity="right" />
+
+            <TextView
+                android:id="@+id/row2_col2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Row2_Col2"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+    -->

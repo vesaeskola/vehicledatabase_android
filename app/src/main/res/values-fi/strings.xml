@@ -13,7 +13,7 @@
 
     <!-- general localizations -->
     <string name="wellcome_message">Tervetuloa käyttämään ajoneuvotietokantaa.\nVoit lisätä ensimmäinen ajoneuvosi klikkaamalla plus ikonia.</string>
-    <string name="activity_entry_done">OK</string>
+    <string name="activity_entry_done">Valmis</string>
     <string name="activity_entry_next">Seuraava</string>
     <string name="activity_entry_pick_date">Valitse päivämäärä</string>
     <string name="activity_entry_pick_image">Ota liitekuva</string>
@@ -21,7 +21,7 @@
     <string name="activity_entry_expense">Hinta</string>
     <string name="activity_entry_amount">Määrä</string>
     <string name="activity_entry_description">Kuvaus</string>
-    <string name="activity_entry_snap_image">liitä</string>
+    <string name="activity_entry_snap_image">Liitä</string>
     <string name="activity_entry_date">14-Mar-16</string>
 
     <string name="confirmation_dialog_ok">OK</string>
@@ -30,10 +30,19 @@
     <string name="confirmation_dialog_delete_vehicle">Haluatko todella poistaa tämän ajoneuvon ?</string>
 
     <!-- Localization strings -->
-    <string name="general_short_date">d.M.yyyy</string>
+    <string name="general_short_date">d.M.yy</string>
+    <string name="general_image_name_date_template">yyMMdd_HHmmss</string>
 
     <!-- activity_vehicle_list.xml -->
     <string name="title">Ajoneuvot</string>
+
+    <!-- activity_action_list.xml -->
+    <string name="title_fueling">Tankkaus</string>
+    <string name="title_service">Huolto</string>
+    <string name="title_event">Tapahtuma</string>
+    <string name="title_fuelings">Tankkaukset</string>
+    <string name="title_services">Huollot</string>
+    <string name="title_events">Tapahtumat</string>
 
     <!-- vehicle_list_item.xml -->
     <string name="open_vehicle">Avaa</string>
@@ -77,6 +86,20 @@
     <!-- activity_service_entry.xml -->
     <string name="service_entry_new_service">Uusi huolto</string>
     <string name="service_entry_edit_service">Muokkaa huoltoa</string>
+    <string name="service_entry_service_type_title">Huollon tyyppi</string>
+
+    <!-- Default service type list -->
+    <string-array name="service_types">
+                <item>Ei määritetty</item>
+                <item>Moottoriöljy</item>
+                <item>Öljynsuodatin</item>
+                <item>Ilmansuodatin</item>
+                <item>Polttoaineensuodatin</item>
+                <item>Jakoketju/hihna</item>
+                <item>Jarrupalat/hihnat</item>
+                <item>Jarrulevyt</item>
+                <item>Muu huolto</item>
+            </string-array>
 
     <!-- activity_fueling_entry.xml -->
     <string name="fueling_entry_new_refueling">Uusi tankkaus</string>
@@ -85,6 +108,16 @@
     <!-- activity_event_entry.xml -->
     <string name="event_entry_new_event">Uusi tapahtuma</string>
     <string name="event_entry_edit_event">Muokkaa tapahtumaa</string>
+
+    <!-- Default event type list -->
+    <string-array name="event_types">
+                <item>Ei määritetty</item>
+                <item>Mittarilukema</item>
+                <item>Varuste</item>
+                <item>Matka</item>
+                <item>Muisto</item>
+                <item>Muu tapahtuma</item>
+            </string-array>
 
 
     <string name="privacy_policy_title">Privacy Policy</string>

@@ -18,48 +18,62 @@
     <RelativeLayout
         android:id="@+id/title_area"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
         android:background="#ffeb3b"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="8pt">
+        android:layout_marginBottom="4pt">
 
-        <ImageView
-            android:id="@+id/menu_icon"
+        <Button
+            android:id="@+id/menu_button"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_margin="4dp"
-            android:elevation="3dp"
+            android:elevation="6dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:onClick="openMenu"
-            android:background="@drawable/menu_icon2" />
+            android:background="@drawable/menu_icon2"
+            android:onClick="OnOpenMenu" />
+
+        <TextView
+            android:id="@+id/vehicle_make"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/menu_button"
+            android:text="Make"
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/vehicle_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/vehicle_make"
+            android:text="Make"
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/vehicle_regplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/vehicle_model"
+            android:text="Plate"
+            android:textSize="@dimen/title_medium_text_size"
+            android:elevation="0dp"
+            android:layout_marginLeft="4dp" />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/menu_icon"
-            android:text="@string/event_entry_new_event"
+            android:layout_below="@+id/vehicle_make"
+            android:layout_toRightOf="@+id/menu_button"
+            android:text="Title"
             android:textSize="22sp"
-            android:elevation="0dp"
-            android:layout_margin="4dp"
-            android:layout_centerVertical="true" />
-        <!--
-        <Button
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="4dp"
-            android:elevation="3dp"
-            android:background="@drawable/round_button"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="+"
-            android:state_enabled="false"
-            android:textColor="#fff"
-            android:textSize="28dp" />-->
+            android:layout_marginLeft="4dp"
+            android:textStyle="normal|bold" />
     </RelativeLayout>
 
 
@@ -84,11 +98,11 @@
             android:id="@+id/date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/fly_text_size"
             android:layout_alignRight="@+id/date_icon"
-            android:layout_marginRight="-26dp"
+            android:layout_marginRight="-44dp"
             android:layout_marginTop="-2dp"
             android:text="@string/activity_entry_date"
-            android:textSize="10sp"
             android:background="#f57f17"
             android:padding="@dimen/text_padding"
             android:elevation="6dp"
@@ -96,26 +110,54 @@
 
         <!-- Camera to pick attachment image -->
         <ImageView
-            android:id="@+id/attachment_icon"
+            android:id="@+id/camera_icon"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:elevation="3dp"
+            android:elevation="6dp"
             android:background="@drawable/camera_icon2"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="18dp"
+            android:onClick="pickImageWithCamera" />
+
+        <!-- Tip to capture image, or count of attachments -->
+        <TextView
+            android:id="@+id/camera_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/fly_text_size"
+            android:layout_alignRight="@+id/camera_icon"
+            android:layout_marginRight="-16dp"
+            android:layout_marginTop="0dp"
+            android:elevation="6dp"
+            android:text="@string/activity_entry_snap_image"
+            android:background="#f57f17"
+            android:padding="@dimen/text_padding"
+            android:onClick="pickImageWithCamera" />
+
+        <!-- Paper clip to show attachment exists -->
+        <ImageView
+            android:id="@+id/attachment_icon"
+            android:layout_width="16dp"
+            android:layout_height="36dp"
+            android:elevation="9dp"
+            android:background="@drawable/klemmari2"
+            android:layout_marginTop="22dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
             android:onClick="pickImageWithCamera" />
 
         <TextView
             android:id="@+id/attachment_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/fly_text_size"
             android:layout_alignRight="@+id/attachment_icon"
-            android:layout_marginRight="-16dp"
-            android:layout_marginTop="-2dp"
-            android:elevation="6dp"
-            android:text="@string/activity_entry_snap_image"
-            android:textSize="12sp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="40dp"
+            android:elevation="10dp"
+            android:text="0"
             android:background="#f57f17"
             android:padding="@dimen/text_padding"
             android:onClick="pickImageWithCamera" />
@@ -134,13 +176,13 @@
             android:id="@+id/mileage_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/fly_text_size"
             android:layout_alignRight="@+id/mileage_icon"
-            android:layout_marginRight="4dp"
+            android:layout_marginRight="-4dp"
             android:elevation="6dp"
             android:layout_marginTop="4dp"
             android:layout_below="@+id/date_icon"
             android:text="km"
-            android:textSize="10sp"
             android:background="#f57f17"
             android:padding="@dimen/text_padding" />
 
@@ -152,6 +194,8 @@
             android:layout_toRightOf="@id/mileage_icon"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="8dp"
+            android:inputType="number|numberDecimal"
+            android:textSize="@dimen/activity_text_size"
             android:hint="@string/activity_entry_mileage" />
 
 
@@ -161,7 +205,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:elevation="3dp"
-            android:background="@drawable/expense_icon2"
+            android:background="@drawable/expense_icon3"
             android:layout_below="@+id/mileage_icon"
             android:layout_marginTop="8dp" />
 
@@ -169,12 +213,12 @@
             android:id="@+id/currency_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/fly_text_size"
             android:layout_alignRight="@+id/expense_icon"
             android:layout_marginRight="4dp"
             android:layout_marginTop="4dp"
             android:layout_below="@+id/mileage_icon"
             android:text="€"
-            android:textSize="10sp"
             android:background="#f57f17"
             android:padding="@dimen/text_padding"
             android:elevation="6dp" />
@@ -187,7 +231,37 @@
             android:layout_toRightOf="@id/expense_icon"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="8dp"
+            android:inputType="number|numberDecimal"
+            android:textSize="@dimen/activity_text_size"
             android:hint="@string/activity_entry_expense" />
+
+        <!-- Event type -->
+        <!--
+        <Spinner
+            android:id="@+id/event_type"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/expense_icon"
+            android:layout_marginTop="8dp"  />-->
+
+        <!-- Service type -->
+        <ImageView
+            android:id="@+id/type_of_event_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/event_type"
+            android:layout_below="@+id/expense_icon"
+            android:layout_marginTop="8dp" />
+
+        <Spinner
+            android:id="@+id/type_of_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/type_of_event_icon"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@id/expense_icon" />
+
 
         <!-- Description entry -->
         <ImageView
@@ -196,17 +270,18 @@
             android:layout_height="36dp"
             android:elevation="3dp"
             android:background="@drawable/description_icon2"
-            android:layout_below="@+id/expense_icon"
+            android:layout_below="@+id/type_of_event_icon"
             android:layout_marginTop="8dp" />
 
         <EditText
             android:id="@+id/description"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/expense_icon"
+            android:layout_below="@+id/type_of_event_icon"
             android:layout_toRightOf="@id/description_icon"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="8dp"
+            android:textSize="@dimen/activity_text_size"
             android:hint="@string/activity_entry_description" />
 
         <Button
@@ -228,9 +303,9 @@
             android:id="@+id/next_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/fly_text_size"
             android:elevation="6dp"
             android:text="@string/activity_entry_done"
-            android:textSize="12sp"
             android:background="#f57f17"
             android:padding="@dimen/text_padding"
             android:onClick="OnEventEntered"

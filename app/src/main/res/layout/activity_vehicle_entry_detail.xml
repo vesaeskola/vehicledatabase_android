@@ -20,33 +20,33 @@ Copyright (C) 2016 Vesa Eskola.
         android:id="@+id/title_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="3dp"
         android:background="#ffeb3b"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="4pt">
 
-        <ImageView
-            android:id="@+id/menu_icon"
+        <Button
+            android:id="@+id/menu_button"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_margin="4dp"
-            android:elevation="3dp"
+            android:elevation="6dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:onClick="openMenu"
-            android:background="@drawable/menu_icon2" />
+            android:background="@drawable/menu_icon2"
+            android:onClick="OnOpenMenu" />
+
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/menu_button"
             android:text="@string/vehicle_entry_basic_new_vehicle"
-            android:textSize="22sp"
-            android:elevation="0dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/menu_icon"
-            android:layout_toEndOf="@+id/menu_icon" />
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp"/>
+
 
     </RelativeLayout>
 
@@ -58,30 +58,47 @@ Copyright (C) 2016 Vesa Eskola.
         android:layout_marginLeft="6pt">
 
         <!-- Camera to pick attachment image -->
+        <!--
         <ImageView
             android:id="@+id/attachment_icon"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:elevation="3dp"
+            android:elevation="6dp"
             android:background="@drawable/camera_icon2"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="24dp"
-            android:onClick="pickImageWithCamera" />
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="18dp"
+            android:onClick="pickImageWithCamera" />-->
 
+        <!-- Tip to capture image, or count of attachments -->
+        <!--
         <TextView
             android:id="@+id/attachment_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/attachment_icon"
             android:layout_marginRight="-16dp"
-            android:layout_marginTop="-2dp"
-            android:elevation="6dp"
+            android:layout_marginTop="0dp"
+            android:elevation="9dp"
             android:text="@string/activity_entry_snap_image"
             android:textSize="12sp"
             android:background="#f57f17"
             android:padding="@dimen/text_padding"
-            android:onClick="pickImageWithCamera" />
+            android:onClick="pickImageWithCamera" />-->
+
+        <!-- Paper clip to show attachment exists -->
+        <!--
+        <ImageView
+            android:id="@+id/klemmari_icon"
+            android:layout_width="16dp"
+            android:layout_height="36dp"
+            android:elevation="3dp"
+            android:background="@drawable/klemmari2"
+            android:layout_marginTop="22dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:onClick="showAttachments" />-->
 
         <!-- year entry -->
         <ImageView
@@ -100,6 +117,7 @@ Copyright (C) 2016 Vesa Eskola.
             android:textSize="@dimen/activity_text_size"
             android:hint="@string/vehicle_entry_detail_year"
             android:layout_toLeftOf="@+id/attachment_icon"
+            android:inputType="number|numberDecimal"
             android:layout_alignLeft="@+id/vincode"
             android:layout_alignStart="@+id/vincode" />
 
@@ -264,6 +282,9 @@ Copyright (C) 2016 Vesa Eskola.
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:elevation="3dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+
             android:background="@drawable/round_button"
             android:text="\u25B6"
             android:state_enabled="false"

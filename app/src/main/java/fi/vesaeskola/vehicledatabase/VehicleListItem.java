@@ -25,6 +25,7 @@ public class VehicleListItem {
     public String model;
     public String regplate;
     public String vincode;
+    public String mImagePath;
 
     public VehicleListItem(int vehicleId, String make, String model, String regplate, String vincode) {
         this.mVehicleId = vehicleId;
@@ -32,5 +33,9 @@ public class VehicleListItem {
         this.model = model;
         this.regplate = regplate;
         this.vincode = vincode;
+    }
+
+    public void setImagePath (String imagePath) {
+        mImagePath = imagePath;
     }
 }

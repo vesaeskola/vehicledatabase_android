@@ -27,8 +27,10 @@ public class EnginePool {
     private static final String TAG = "EnginePool";
     static private DBEngine mDatabaseEngine = null;
 
+    /*
     public EnginePool() {
     }
+    */
 
     public static Object getEngine(String engineName) {
         if (engineName == "DBEngine") {

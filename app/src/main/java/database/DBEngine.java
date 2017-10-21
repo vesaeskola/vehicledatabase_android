@@ -26,14 +26,23 @@ Copyright (C) 2016 Vesa Eskola.
 
 package database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
+import fi.vesaeskola.vehicledatabase.R;
+import fi.vesaeskola.vehicledatabase.VehileDatabaseApplication;
+
 public class DBEngine extends SQLiteOpenHelper {
     private static final String TAG = "DBEngine";
+    private ArrayList<String> mServiceTypes;
+    private ArrayList<String> mEventTypes;
+
 
     public DBEngine(Context context) {
         super(context, VehicleContract.DB_NAME, null, VehicleContract.DB_VERSION);
@@ -44,6 +53,7 @@ public class DBEngine extends SQLiteOpenHelper {
 
         String query = "select sqlite_version() AS sqlite_version";
         SQLiteDatabase db_x = SQLiteDatabase.openOrCreateDatabase(":memory:", null);
+
         Cursor cursor = db_x.rawQuery(query, null);
         String sqliteVersion = "";
         if (cursor.moveToNext()) {
@@ -84,7 +94,7 @@ public class DBEngine extends SQLiteOpenHelper {
                 VehicleContract.EventEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 VehicleContract.EventEntry.COL_VEHICLEID + " TEXT, " +
                 VehicleContract.EventEntry.COL_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
-                VehicleContract.EventEntry.COL_EVENTID + " INT, " +
+                VehicleContract.EventEntry.COL_EVENTTYPE + " INT, " +
                 VehicleContract.EventEntry.COL_MILEAGE + " INT, " +
                 VehicleContract.EventEntry.COL_EXPENSE + " INT, " +
                 VehicleContract.EventEntry.COL_DESCRIPTION + " TEXT" +
@@ -105,19 +115,59 @@ public class DBEngine extends SQLiteOpenHelper {
         db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.ServiceTypeEntry.TABLE + " ( " +
-                VehicleContract.ServiceTypeEntry.COL_SERVICETYPE + " INTEGER PRIMARY KEY NOT NULL, " +
+                VehicleContract.ServiceTypeEntry._ID + " INTEGER PRIMARY KEY NOT NULL, " +
                 VehicleContract.ServiceTypeEntry.COL_DESCRIPTION + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
         db.execSQL(createTable);
 
         createTable = "CREATE TABLE " + VehicleContract.EventTypeEntry.TABLE + " ( " +
-                VehicleContract.EventTypeEntry.COL_EVENTTYPE + " INTEGER PRIMARY KEY NOT NULL, " +
+                VehicleContract.EventTypeEntry._ID + " INTEGER PRIMARY KEY NOT NULL, " +
                 VehicleContract.EventTypeEntry.COL_DESCRIPTION + " TEXT" +
                 " );";
         Log.d(TAG, "createTable: " + createTable);
-
         db.execSQL(createTable);
+
+        createTable = "CREATE TABLE " + VehicleContract.ImageLinkEntry.TABLE + " ( " +
+                VehicleContract.ImageLinkEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                VehicleContract.ImageLinkEntry.COL_ACTIONTYPE + " INT, " +
+                VehicleContract.ImageLinkEntry.COL_ACTIONID + " INT, " +
+                VehicleContract.ImageLinkEntry.COL_IMAGEPATH + " TEXT, " +
+                VehicleContract.ImageLinkEntry.COL_DESCRIPTION + " TEXT" +
+                " );";
+        Log.d(TAG, "createTable: " + createTable);
+        db.execSQL(createTable);
+
+        createInitialData (db);
+
+
+    }
+
+    private void createInitialData (SQLiteDatabase db) {
+
+        ContentValues values = new ContentValues();
+
+        // Default service types begin
+        final String[] serviceTypes = VehileDatabaseApplication.getAppContext().getResources().getStringArray(R.array.service_types);
+
+        for (int i = 0; i < serviceTypes.length; i++) {
+            values.clear();
+            values.put(VehicleContract.ServiceTypeEntry.COL_DESCRIPTION, serviceTypes[i]);
+            db.insertWithOnConflict(VehicleContract.ServiceTypeEntry.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            Log.d(TAG, "Default service type: " + serviceTypes[i] + " created");
+        }
+        // Default service types end
+
+
+        final String[] eventTypes = VehileDatabaseApplication.getAppContext().getResources().getStringArray(R.array.event_types);
+        for (int i = 0; i < eventTypes.length; i++) {
+            values.clear();
+            values.put(VehicleContract.EventTypeEntry.COL_DESCRIPTION, eventTypes[i]);
+            db.insertWithOnConflict(VehicleContract.EventTypeEntry.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            Log.d(TAG, "Default event type: " + eventTypes[i] + " created");
+        }
+        // Basic event types end
+
     }
 
     @Override
@@ -152,5 +202,62 @@ public class DBEngine extends SQLiteOpenHelper {
         db.delete(VehicleContract.ServiceEntry.TABLE, VehicleContract.ServiceEntry.COL_VEHICLEID + "=?", new String[]{"" + vehicleID});
     }
 
+    public void deleteAttachmentLink (int attachmentID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        db.delete(VehicleContract.ImageLinkEntry.TABLE, VehicleContract.ImageLinkEntry._ID + "=?", new String[]{"" + attachmentID});
+    }
+
+    /*
+    public void removeVehicleImageLink (int vehicleID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        //db.delete(VehicleContract.ImageLinkEntry.TABLE, VehicleContract.ImageLinkEntry._ID + "=?", new String[]{"" + attachmentID});
+    }
+    */
+
+    public void updateVehicleImagePath (int vehicleID, String imagePath) {
+        ContentValues values = new ContentValues();
+        values.put(VehicleContract.VehicleEntry.COL_IMAGEPATH, imagePath);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        db.update(VehicleContract.VehicleEntry.TABLE, values, "_id=" + vehicleID, null);
+    }
+
+    public ArrayList<String> getServiceTypeList () {
+        if (mServiceTypes == null) {
+            mServiceTypes = new ArrayList<String>();
+            // Read all services types from db to multiSelectionSpinner widget
+            String selectQuery = "SELECT  * FROM " + VehicleContract.ServiceTypeEntry.TABLE;
+            Log.d(TAG, "selectQuery: " + selectQuery);
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex(VehicleContract.ServiceTypeEntry._ID));
+                String serviceType = cursor.getString(cursor.getColumnIndex(VehicleContract.ServiceTypeEntry.COL_DESCRIPTION));
+                mServiceTypes.add(serviceType);
+                Log.d(TAG, "service type[" + id + "]: " + serviceType);
+            }
+        }
+        return mServiceTypes;
+    }
+
+    public ArrayList<String> getEventTypeList () {
+        if (mEventTypes == null) {
+            mEventTypes = new ArrayList<String>();
+            // Read all services types from db to multiSelectionSpinner widget
+            String selectQuery = "SELECT  * FROM " + VehicleContract.EventTypeEntry.TABLE;
+            Log.d(TAG, "selectQuery: " + selectQuery);
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex(VehicleContract.EventTypeEntry._ID));
+                String eventType = cursor.getString(cursor.getColumnIndex(VehicleContract.EventTypeEntry.COL_DESCRIPTION));
+                mEventTypes.add(eventType);
+                Log.d(TAG, "event type[" + id + "]: " + eventType);
+            }
+        }
+        return mEventTypes;
+    }
 
 }

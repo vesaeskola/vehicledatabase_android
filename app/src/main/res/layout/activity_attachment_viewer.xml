@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Layout name: activity_attachment_viewer.xml
+    Abstract: Layout for the AttachmentViewerActivity class.
+    Environment: Android
+    Copyright (C) 2016 Vesa Eskola.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activity_action_list"
+    tools:context="fi.vesaeskola.vehicledatabase.AttachmentViewerActivity">
+
+    <!-- Title area begin -->
+    <RelativeLayout
+        android:id="@+id/title_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
+        android:background="#ffeb3b"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="4pt">
+
+        <Button
+            android:id="@+id/menu_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:elevation="6dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/menu_icon2"
+            android:onClick="OnOpenMenu" />
+
+        <TextView
+            android:id="@+id/vehicle_make"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/menu_button"
+            android:text="Make"
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/vehicle_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/vehicle_make"
+            android:text="Make"
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/vehicle_regplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/vehicle_model"
+            android:text="Plate"
+            android:textSize="@dimen/title_medium_text_size"
+            android:elevation="0dp"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/action_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vehicle_make"
+            android:layout_toRightOf="@+id/menu_button"
+            android:text="Action Type"
+            android:textSize="22sp"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/action_odometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vehicle_make"
+            android:layout_toRightOf="@+id/action_type"
+            android:text="Odometer"
+            android:textSize="22sp"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/action_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/vehicle_make"
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginRight="@dimen/title_right_margin"/>
+        <!--
+        <TextView
+            android:id="@+id/vehicle_make"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/menu_button"
+            android:text="Make"
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/vehicle_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/vehicle_make"
+            android:text="Make"
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/vehicle_regplate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/vehicle_model"
+            android:text="Plate"
+            android:textSize="@dimen/title_medium_text_size"
+            android:elevation="0dp"
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/action_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vehicle_make"
+            android:layout_toRightOf="@+id/menu_button"
+            android:text="Title"
+            android:textSize="22sp"
+            android:layout_marginLeft="4dp" />
+        -->
+        <!--
+        <TextView
+            android:id="@+id/action_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/menu_button"
+            android:layout_below="@+id/vehicle_make"
+            android:textSize="@dimen/title_medium_text_size"
+            android:text="ActionType" />-->
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/content_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_area"
+        android:layout_marginLeft="6pt">
+
+        <ListView
+            android:id="@+id/list_attachments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="22dp"
+            android:layout_marginEnd="22dp" />
+    </RelativeLayout>
+
+</RelativeLayout>

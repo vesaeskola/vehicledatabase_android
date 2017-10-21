@@ -22,20 +22,20 @@ public class Constants {
 
     public static final String AUTHORITY = "fi.vesaeskola.vehicledatabase.fileprovider";
     public static final String JPEG_FILE_PREFIX = "IMG_";
+    public static final int PERMISSIONS_REQUEST_READ_CONTACTS_WRITE_EXTERNAL_STORAGE = 79;
 
     public class RequestCode {
-        public static final int REQUEST_IMAGE_CAPTURE = 1;
-        public static final int REQUEST_NEW_VEHICLE_STEP1 = 2;
-        public static final int REQUEST_EDIT_VEHICLE = 3;
-        public static final int REQUEST_NEW_FUELING = 4;
-        public static final int REQUEST_NEW_SERVICE = 5;
-        public static final int REQUEST_NEW_EVENT = 6;
-        //public static final int REQUEST_NEW_VEHICLE = 7;
-
-
+        public static final int REQUEST_FUELING = 1;
+        public static final int REQUEST_SERVICE = 2;
+        public static final int REQUEST_EVENT = 3;
+        public static final int REQUEST_IMAGE_CAPTURE = 4;
+        public static final int REQUEST_VEHICLE_INFO = 5;
     }
 
-
+    public class ConfirmationDialogReason {
+        public static final int CONF_REASON_TEST = 0;
+        public static final int CONF_REASON_DELETE_VEHICLE = 1;
+    }
 
     public class OdometerUnitId {
         public static final int ODOMETER_UNIT_MILES = 1;

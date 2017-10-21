@@ -19,22 +19,22 @@
         android:id="@+id/title_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="3dp"
         android:background="#ffeb3b"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="4pt">
 
-        <ImageView
+        <Button
             android:id="@+id/menu_button"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_margin="4dp"
-            android:elevation="3dp"
+            android:elevation="6dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:onClick="OnOpenMenu"
-            android:background="@drawable/menu_icon2" />
+            android:background="@drawable/menu_icon2"
+            android:onClick="OnOpenMenu" />
 
         <TextView
             android:id="@+id/vehicle_make"
@@ -42,9 +42,8 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/menu_button"
             android:text="Make"
-            android:textSize="22sp"
-            android:textStyle="normal|bold"
-            android:layout_margin="4dp" />
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp" />
 
         <TextView
             android:id="@+id/vehicle_model"
@@ -52,8 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/vehicle_make"
             android:text="Make"
-            android:textSize="14sp"
-            android:layout_margin="4dp" />
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp" />
 
         <TextView
             android:id="@+id/vehicle_regplate"
@@ -61,14 +60,25 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/vehicle_model"
             android:text="Plate"
-            android:textSize="14sp"
+            android:textSize="@dimen/title_medium_text_size"
             android:elevation="0dp"
-            android:layout_margin="4dp" />
+            android:layout_marginLeft="4dp" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vehicle_make"
+            android:layout_toRightOf="@+id/menu_button"
+            android:text="Title"
+            android:textSize="22sp"
+            android:layout_marginLeft="4dp"
+            android:textStyle="normal|bold" />
 
         <Button
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_margin="4dp"
+            android:layout_margin="@dimen/title_right_margin"
             android:elevation="6dp"
             android:background="@drawable/round_button"
             android:layout_alignParentRight="true"

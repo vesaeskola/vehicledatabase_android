@@ -13,6 +13,71 @@
     android:layout_gravity="center_vertical"
     android:clickable="true">
 
+    <ImageView
+        android:id="@+id/vehicleThumbIcon"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:elevation="3dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:id="@+id/vehicle_make"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/vehicleThumbIcon"
+        android:text="Make"
+        android:textSize="16sp"
+        android:textStyle="normal|bold"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:id="@+id/vehicle_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/vehicle_make"
+        android:text="Model"
+        android:textSize="14sp"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:id="@+id/vehicle_regplate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/vehicle_model"
+        android:text="Plate"
+        android:textSize="14sp"
+        android:elevation="0dp"
+        android:layout_margin="4dp" />
+
+    <Button
+        android:id="@+id/vehicle_open"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:background="@drawable/round_button"
+        android:text="\u25B6"
+        android:textColor="#fff"
+        android:textSize="18dp"
+        android:layout_margin="4dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:onClick="openVehicle" />
+
+    <TextView
+        android:id="@+id/vehicle_vincode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vehicle_make"
+        android:layout_toRightOf="@+id/vehicleThumbIcon"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="4dp"
+        android:text="Vincode"
+        android:textSize="14sp" />
+
+
+    <!--
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -74,6 +139,7 @@
             android:onClick="openVehicle" />
 
     </LinearLayout>
+    -->
 
 </RelativeLayout>
 

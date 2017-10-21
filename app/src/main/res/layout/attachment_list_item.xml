@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Layout name: attachment_list_item.xml
+    Abstract: Layout for the ListView item used in AttachmentViewerActivity page.
+    Environment: Android
+    Copyright (C) 2016 Vesa Eskola.
+-->
+
+<!--
+px: Pixels - corresponds to actual pixels on the screen
+in: Inches - based on the physical size of the screen. 1 Inch = 2.54 centimeters
+mm: Millimeters - based on the physical size of the screen.
+pt: Points - 1/72 of an inch based on the physical size of the screen.
+dp or dip: Density-independent Pixels - an abstract unit that is based on the physical density of the screen. These units are relative to a 160 dpi screen, so one dp is one pixel on a 160 dpi screen. The ratio of dp-to-pixel will change with the screen density, but not necessarily in direct proportion. Note: The compiler accepts both "dip" and "dp", though "dp" is more consistent with "sp".
+sp: Scale-independent Pixels - this is like the dp unit, but it is also scaled by the user's font size preference. It is recommend you use this unit when specifying font sizes, so they will be adjusted for both the screen density and user's preference.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:layout_marginTop="4dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp" >
+
+    <!-- Honor Lite 7: 3120 * 4160 / 10 = 312 * = 416 -->
+    <!-- 1080 x 1920 scaled down by 5 = 312 x 416 -->
+
+        <ImageView
+            android:id="@+id/attachment_image"
+            android:layout_width="fill_parent"
+            android:layout_height="208dp"
+            android:layout_marginRight="20dp"
+            android:elevation="0dp" />
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/list_view_normal_text_size"
+            android:background="#f57f17"
+            android:text="Title"
+            android:elevation="1dp"  />
+
+        <TextView
+            android:id="@+id/id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/title"
+            android:textSize="@dimen/list_view_normal_text_size"
+            android:background="#f57f17"
+            android:text="ID"
+            android:elevation="1dp"  />
+
+        <Button
+            android:id="@+id/btn_popup"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginTop="60dp"
+            android:layout_alignParentRight="true"
+            android:elevation="3dp"
+            android:background="@drawable/round_button"
+            android:onClick="openPopup"
+            android:text="\u25BC"
+            android:textColor="#fff"
+            android:textSize="44dp" />
+
+
+
+</RelativeLayout>
+

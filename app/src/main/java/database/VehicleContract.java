@@ -30,6 +30,8 @@ import android.provider.BaseColumns;
 
 public class VehicleContract {
     public static final String DB_NAME = "vehicledatabase.db";
+    public static final String DB_BACKUP_NAME = "vehicledatabase.bac";
+    public static final String DB_BACKUP_KEY_PREFIX = "main_db";
     public static final int DB_VERSION = 2;
 
     // A provider isn't required to have a primary key, and it isn't required to use _ID as the
@@ -70,7 +72,7 @@ public class VehicleContract {
         public static final String TABLE = "EVENTS";
         public static final String COL_VEHICLEID = "VehicleId";
         public static final String COL_DATE = "Date";
-        public static final String COL_EVENTID = "EventId";
+        public static final String COL_EVENTTYPE = "EventType";
         public static final String COL_MILEAGE = "Mileage";
         public static final String COL_EXPENSE = "Expense";
         public static final String COL_DESCRIPTION = "Description";
@@ -90,14 +92,12 @@ public class VehicleContract {
     // This class represent one row of SERVICE_TYPE table
     public class ServiceTypeEntry implements BaseColumns {
         public static final String TABLE = "SERVICE_TYPE";
-        public static final String COL_SERVICETYPE = "ServiceType";
         public static final String COL_DESCRIPTION = "Description";
     }
 
     // This class represent one row of EVENT_TYPE table
     public class EventTypeEntry implements BaseColumns {
         public static final String TABLE = "EVENT_TYPE";
-        public static final String COL_EVENTTYPE = "EventType";
         public static final String COL_DESCRIPTION = "Description";
     }
 
@@ -106,6 +106,8 @@ public class VehicleContract {
         public static final String TABLE = "IMAGELINKS";
         public static final String COL_ACTIONTYPE = "ActionType";   // {1: refueling, 2: service, 3: event}
         public static final String COL_ACTIONID = "ActionId";       // Link to _ID of FUELLING, EVENTS or SERVICES
+        public static final String COL_IMAGEPATH = "ImagePath";
+        public static final String COL_DESCRIPTION = "Description";
     }
 
 }

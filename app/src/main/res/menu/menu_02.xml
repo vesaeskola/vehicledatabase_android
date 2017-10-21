@@ -9,7 +9,19 @@
         android:id="@+id/menuitem_delete_vehicle"
         android:title="Delete Vehicle" />
     <item
+        android:id="@+id/menuitem_remove_vehicle_image"
+        android:title="Remove Vehicle image" />
+    <item
+        android:id="@+id/menuitem_backup"
+        android:title="Backup database" />
+    <item
+        android:id="@+id/menuitem_restore"
+        android:title="Restore database" />
+    <item
         android:id="@+id/menuitem_show_privacy_policy"
         android:title="Privacy Policy" />
+    <item
+        android:id="@+id/menuitem_test"
+        android:title="Test" />
 
 </menu>

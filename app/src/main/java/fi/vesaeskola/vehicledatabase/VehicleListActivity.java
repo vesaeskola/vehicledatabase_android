@@ -20,6 +20,8 @@ Copyright (C) 2016 Vesa Eskola.
 package fi.vesaeskola.vehicledatabase;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,7 +31,6 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -45,12 +46,13 @@ import database.DBEngine;
 import database.VehicleContract;
 import utilities.EnginePool;
 
-public class VehicleListActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class VehicleListActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener, ConfirmationDialogFragment.NoticeDialogListener {
     private static final String TAG = "VehicleListActivity";
     public static String PACKAGE_NAME;
     private DBEngine mDatabaseEngine;
     private ListView mVehicleListView;
     private VehicleListAdapter mVehicleAdapter;
+    private FragmentManager mFm = getFragmentManager();
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -76,14 +78,6 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
         mVehicleListView = (ListView) findViewById(R.id.list_vehicle);
         mVehicleListView.setClickable(true);
 
-        mVehicleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-                VehicleListItem vehicle = (VehicleListItem) mVehicleListView.getItemAtPosition(position);
-                Log.d(TAG, "vehicle clicked ID: " + vehicle.mVehicleId);
-            }
-        });
-
         // SQLiteOpenHelper based helper to open or create database.
         // Note: Will delete existing data if new database structure is used.
         mDatabaseEngine = (DBEngine)EnginePool.getEngine("DBEngine");
@@ -94,6 +88,23 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    public void onDialogPositiveClick(DialogFragment dialog, int ConfDialogReason) {
+        Log.d(TAG, "onDialogPositiveClick");
+
+        switch (ConfDialogReason) {
+            case Constants.ConfirmationDialogReason.CONF_REASON_DELETE_VEHICLE: {
+                VehicleListItem vehicle = (VehicleListItem)mVehicleListView.getSelectedItem();
+                if (vehicle != null) {
+                    mDatabaseEngine.deleteVehicle (vehicle.mVehicleId);
+                }
+            }
+        }
+    }
+
+    public void onDialogNegativeClick(DialogFragment dialog, int ConfDialogReason) {
+        Log.d(TAG, "onDialogNegativeClick");
+    }
+
     public void OnOpenMenu(View view) {
         View parent = (View) view.getParent();
         Log.d(TAG, "onOpenMenu");
@@ -102,12 +113,15 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
         popup.setOnMenuItemClickListener(VehicleListActivity.this);
         MenuInflater inflater = popup.getMenuInflater();
 
+        inflater.inflate(R.menu.menu_03, popup.getMenu());
+        /*
         if (mVehicleListView.getAdapter().isEmpty() || mVehicleListView.getSelectedItem() == null) {
             inflater.inflate(R.menu.menu_01, popup.getMenu());
         }
         else {
-            inflater.inflate(R.menu.menu_02, popup.getMenu());
+            inflater.inflate(R.menu.menu_03, popup.getMenu());
         }
+        */
 
         popup.show();
     }
@@ -115,6 +129,13 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menuitem_test: {
+                Log.d(TAG, "Menu item selected: Test");
+
+                ConfirmationDialogFragment alertFragment = new ConfirmationDialogFragment();
+                alertFragment.configure (Constants.ConfirmationDialogReason.CONF_REASON_TEST, R.drawable.expense_icon3, "Test", "Testing the dialog");
+                alertFragment.show(mFm, "");
+            }
             case R.id.menuitem_edit_vehicle: {
                 Log.d(TAG, "Menu item selected: Edit vehicle");
 
@@ -124,7 +145,7 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
                     Intent intent = new Intent(this, VehicleEntryBasicActivity.class);
 
                     intent.putExtra("vehicle_Id", vehicle.mVehicleId);
-                    startActivityForResult(intent, Constants.RequestCode.REQUEST_EDIT_VEHICLE);
+                    startActivityForResult(intent, Constants.RequestCode.REQUEST_VEHICLE_INFO);
 
                     Log.d(TAG, "open vehicle editor with vehicle ID: " + vehicle.mVehicleId);
                 }
@@ -135,21 +156,12 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
 
                 VehicleListItem vehicle = (VehicleListItem)mVehicleListView.getSelectedItem();
                 if (vehicle != null) {
-                mDatabaseEngine.deleteVehicle (vehicle.mVehicleId);
-                }
-                /*
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.vehicle_info_delete_vehicle_title)
-                        .setMessage(R.string.vehicle_info_delete_vehicle_confirmation)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Log.d(TAG, "Vehicle delete selected");
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, null).show();
-                */
+                    ConfirmationDialogFragment alertFragment = new ConfirmationDialogFragment();
+                    alertFragment.configure (Constants.ConfirmationDialogReason.CONF_REASON_DELETE_VEHICLE, R.drawable.delete_vehicle_icon, "Delete Vehicle", "Do You want to delete vehicle: " + vehicle.make + " ?");
+                    alertFragment.show(mFm, "");
+
+                }
                 return true;
             }
             case R.id.menuitem_show_privacy_policy: {
@@ -179,13 +191,14 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == Constants.RequestCode.REQUEST_VEHICLE_INFO) {
                 updateUI();
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Log.d(TAG, "New vechile entering cancelled");
             }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d(TAG, "Cancelled");
         }
+
     }//onActivityResult
 
     private void updateUI() {
@@ -206,6 +219,11 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
                     cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_VINCODE))
             );
 
+            String imagepath = cursor.getString(cursor.getColumnIndex(VehicleContract.VehicleEntry.COL_IMAGEPATH));
+            if (imagepath != null && imagepath.length() > 0) {
+                vehicle.setImagePath(imagepath);
+            }
+
             vehicleList.add(vehicle);
             Log.d(TAG, "Vehicle read from database: " + vehicle.mVehicleId + " " + vehicle.make + "  " + vehicle.model + "  " + vehicle.regplate + "  " + vehicle.vincode);
         }
@@ -220,8 +238,8 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
         }
         else
         {
-            tvWellcomeMessage.setVisibility(View.GONE);
-            ivWellcomeMessage.setVisibility(View.GONE);
+            tvWellcomeMessage.setVisibility(View.INVISIBLE);
+            ivWellcomeMessage.setVisibility(View.INVISIBLE);
         }
 
 
@@ -247,7 +265,9 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
         // Open VehicleEntryBasicActivity page
         Intent intent = new Intent(this, VehicleInfoActivity.class);
         intent.putExtra("vehicle_Id", (int) vehicleOpenBtn.getTag());
-        startActivityForResult(intent, 1);
+
+        // Here we set request code REQUEST_EDIT_VEHICLE to indicate user could edit vehicle while viewing the info of it
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_VEHICLE_INFO);
     }
 
 
@@ -256,7 +276,7 @@ public class VehicleListActivity extends AppCompatActivity implements PopupMenu.
 
         // Open VehicleEntryBasicActivity page
         Intent intent = new Intent(this, VehicleEntryBasicActivity.class);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, Constants.RequestCode.REQUEST_VEHICLE_INFO);
     }
     /**
      * A native method that is implemented by the 'native-lib' native library,

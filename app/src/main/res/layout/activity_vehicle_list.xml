@@ -15,6 +15,7 @@
     android:id="@+id/activity_vehicle_list"
     tools:context="fi.vesaeskola.vehicledatabase.VehicleListActivity">
 
+    <!-- Wellcome buble begin -->
     <ImageView
         android:id="@+id/add_vehicle_tip"
         android:layout_width="wrap_content"
@@ -41,45 +42,55 @@
         android:textSize="14sp"
         android:elevation="9dp" />
 
-
+    <!-- Title area begin -->
     <RelativeLayout
         android:id="@+id/title_area"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
         android:background="#ffeb3b"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="1pt">
+        android:layout_marginBottom="4pt">
 
-        <ImageView
-            android:id="@+id/menu_icon"
+        <Button
+            android:id="@+id/menu_button"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_margin="4dp"
-            android:elevation="3dp"
+            android:elevation="6dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:onClick="OnOpenMenu"
-            android:background="@drawable/menu_icon2" />
+            android:background="@drawable/menu_icon2"
+            android:onClick="OnOpenMenu" />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/menu_icon"
+            android:layout_toRightOf="@+id/menu_button"
             android:text="@string/title"
-            android:textSize="22sp"
+            android:textSize="@dimen/title_medium_text_size"
+            android:layout_marginLeft="4dp"/>
+
+        <!--
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/title_text_size"
+            android:layout_toRightOf="@+id/menu_button"
+            android:text="@string/title"
             android:elevation="0dp"
             android:layout_margin="4dp"
             android:background="#ffeb3b"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true" />-->
 
         <Button
             android:id="@+id/add_vehicle"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_margin="4dp"
+            android:layout_marginRight="@dimen/title_right_margin"
             android:elevation="3dp"
             android:background="@drawable/round_button"
             android:layout_alignParentRight="true"
@@ -90,11 +101,9 @@
             android:textColor="#fff"
             android:textSize="20dp"
             android:onClick="onNewVehicle" />
-
-
     </RelativeLayout>
 
-
+    <!-- Content area begin -->
     <RelativeLayout
         android:id="@+id/content_area"
         android:layout_width="match_parent"
